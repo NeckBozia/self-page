@@ -1,0 +1,153 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 5);
+
+const projects = [
+  {
+    name: "self-page",
+    description: "This site. Astro 5 + Tailwind v4, served from a small Proxmox LXC over a Cloudflare Tunnel.",
+    href: "https://github.com/NeckBozia/self-page",
+    external: true,
+  },
+];
+
+const uses = [
+  {
+    title: "Editor & shell",
+    description: "iTerm2 + zsh, JetBrains for Java, Obsidian for notes.",
+    href: "/uses",
+  },
+  {
+    title: "Stack on this site",
+    description: "Astro 5 + Tailwind v4 + MDX, behind a Cloudflare Tunnel.",
+    href: "/uses",
+  },
+];
+---
+
+<Base>
+  <section class="space-y-4 mt-2">
+    <p style="color: var(--color-muted)">NeckBozia</p>
+    <p>
+      <em>Java backend engineer.</em> Homelab hobbyist.
+    </p>
+    <p>Java 后端工程师，业余折腾 homelab。</p>
+  </section>
+
+  <section class="mt-16">
+    <h2 class="text-sm mb-4" style="color: var(--color-muted)">Blog</h2>
+    <ul class="space-y-1">
+      {
+        posts.map((p) => (
+          <li>
+            <a href={`/blog/${p.id}`} class="hover-card">
+              <span class="underline underline-offset-4 decoration-1">
+                {p.data.title}
+              </span>
+              {p.data.description && (
+                <p class="mt-1 text-sm" style="color: var(--color-muted)">
+                  {p.data.description}
+                </p>
+              )}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a href="/blog" class="hover-card">
+          <span class="underline underline-offset-4 decoration-1">
+            All writing
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-sm mb-4" style="color: var(--color-muted)">Projects</h2>
+    <ul class="space-y-1">
+      {
+        projects.map((p) => (
+          <li>
+            <a
+              href={p.href}
+              class="hover-card"
+              target={p.external ? "_blank" : undefined}
+              rel={p.external ? "noopener" : undefined}
+            >
+              <span class="inline-flex items-baseline gap-1">
+                <span class="underline underline-offset-4 decoration-1">
+                  {p.name}
+                </span>
+                {p.external && (
+                  <span aria-hidden="true" style="color: var(--color-muted)">
+                    ↗
+                  </span>
+                )}
+              </span>
+              <p class="mt-1 text-sm" style="color: var(--color-muted)">
+                {p.description}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-sm mb-4" style="color: var(--color-muted)">Uses</h2>
+    <ul class="space-y-1">
+      {
+        uses.map((u) => (
+          <li>
+            <a href={u.href} class="hover-card">
+              <span class="underline underline-offset-4 decoration-1">
+                {u.title}
+              </span>
+              <p class="mt-1 text-sm" style="color: var(--color-muted)">
+                {u.description}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-sm mb-4" style="color: var(--color-muted)">Elsewhere</h2>
+    <ul class="space-y-2 text-sm">
+      <li class="flex items-baseline gap-4">
+        <span class="w-16 shrink-0" style="color: var(--color-muted)">GitHub</span>
+        <a
+          href="https://github.com/NeckBozia"
+          class="underline underline-offset-4 decoration-1"
+          target="_blank"
+          rel="me noopener"
+        >
+          NeckBozia
+        </a>
+      </li>
+      <li class="flex items-baseline gap-4">
+        <span class="w-16 shrink-0" style="color: var(--color-muted)">email</span>
+        <a
+          href="mailto:neckbozia@outlook.com"
+          class="underline underline-offset-4 decoration-1"
+          target="_blank"
+          rel="noopener"
+        >
+          neckbozia@outlook.com
+        </a>
+      </li>
+      <li class="flex items-baseline gap-4">
+        <span class="w-16 shrink-0" style="color: var(--color-muted)">WeChat</span>
+        <span>NeckBozia</span>
+      </li>
+    </ul>
+  </section>
+</Base>

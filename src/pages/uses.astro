@@ -1,0 +1,43 @@
+---
+import Base from "../layouts/Base.astro";
+
+const groups = [
+  {
+    title: "Editor & shell",
+    items: [
+      "iTerm2 + zsh",
+      "JetBrains IDEs for Java",
+      "VS Code for everything else",
+      "Obsidian for notes",
+    ],
+  },
+  {
+    title: "Stack on this site",
+    items: [
+      "Astro 5 + Tailwind v4 + MDX",
+      "Geist + Geist Mono (self-hosted)",
+      "Static, behind a Cloudflare Tunnel",
+    ],
+  },
+];
+---
+
+<Base title="uses" description="Tools I use day to day.">
+  <h1 class="text-lg font-medium mb-8">uses</h1>
+  <div class="space-y-10">
+    {
+      groups.map((g) => (
+        <section>
+          <h2 class="text-sm mb-3" style="color: var(--color-muted)">
+            {g.title}
+          </h2>
+          <ul class="list-disc pl-5 space-y-1 text-sm">
+            {g.items.map((it) => (
+              <li>{it}</li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Base>

@@ -1,0 +1,16 @@
+---
+const path = Astro.url.pathname;
+const isHome = path === "/";
+---
+
+<header>
+  {
+    isHome ? (
+      <span class="font-medium">NeckBozia</span>
+    ) : (
+      <a href="/" class="no-underline hover:underline font-medium">
+        NeckBozia
+      </a>
+    )
+  }
+</header>

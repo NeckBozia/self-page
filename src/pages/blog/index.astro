@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base title="blog" description="Notes on backend, homelab, and tooling.">
+  <h1 class="text-lg font-medium mb-8">blog</h1>
+  {
+    posts.length === 0 ? (
+      <p style="color: var(--color-muted)">Nothing here yet.</p>
+    ) : (
+      <ul class="space-y-3">
+        {posts.map((p) => (
+          <li class="flex items-baseline justify-between gap-4">
+            <a href={`/blog/${p.id}`} class="no-underline hover:underline truncate">
+              {p.data.title}
+            </a>
+            <time
+              datetime={p.data.pubDate.toISOString()}
+              class="text-xs tabular-nums shrink-0"
+              style="color: var(--color-muted)"
+            >
+              {fmt(p.data.pubDate)}
+            </time>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>

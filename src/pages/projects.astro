@@ -1,0 +1,29 @@
+---
+import Base from "../layouts/Base.astro";
+
+const projects = [
+  {
+    name: "self-page",
+    description: "This site — Astro 5 + Tailwind v4, served from a Proxmox LXC over Cloudflare Tunnel.",
+    href: "https://github.com/NeckBozia/self-page",
+  },
+];
+---
+
+<Base title="projects" description="Things I have built or am building.">
+  <h1 class="text-lg font-medium mb-8">projects</h1>
+  <ul class="space-y-6">
+    {
+      projects.map((p) => (
+        <li>
+          <a href={p.href} class="font-medium no-underline hover:underline">
+            {p.name}
+          </a>
+          <p class="mt-1 text-sm" style="color: var(--color-muted)">
+            {p.description}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</Base>
