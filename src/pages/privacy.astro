@@ -1,0 +1,55 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="privacy" description="Privacy policy for personal homelab services">
+  <article class="prose prose-neutral max-w-none">
+    <h1>Privacy Policy</h1>
+    <p><em>Last updated: 2026-05-17</em></p>
+
+    <p>
+      <strong>neckbozia.com</strong> hosts personal homelab services for the owner
+      and a small number of invited users. It is not a commercial product. This
+      page documents what data is processed when you sign in via Cloudflare Access.
+    </p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>
+        <strong>Email address</strong> — obtained from your identity provider
+        (Google, GitHub, or one-time PIN) when you authenticate. Used only to
+        verify you are on the allow-list.
+      </li>
+      <li>
+        <strong>Authentication metadata</strong> (IP, timestamp, identity
+        provider) — logged by Cloudflare Access for security/audit purposes.
+        See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">
+        Cloudflare's privacy policy</a>.
+      </li>
+    </ul>
+
+    <h2>What we do not collect</h2>
+    <ul>
+      <li>No analytics, no third-party trackers.</li>
+      <li>No sale, sharing, or advertising use of your data.</li>
+      <li>No retention beyond what Cloudflare Access keeps for its own audit logs.</li>
+    </ul>
+
+    <h2>Third-party providers</h2>
+    <p>
+      When you sign in with Google or GitHub, those providers receive a sign-in
+      request from this site. Their handling of your data is governed by their
+      respective privacy policies:
+    </p>
+    <ul>
+      <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google</a></li>
+      <li><a href="https://docs.github.com/en/site-policy/privacy-policies" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>
+      Reach out at <a href="mailto:neckbozia@gmail.com">neckbozia@gmail.com</a>
+      for any privacy questions or to be removed from the allow-list.
+    </p>
+  </article>
+</Base>
