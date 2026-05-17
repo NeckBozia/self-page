@@ -5,7 +5,12 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://neckbozia.com',
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/dashboard'),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
