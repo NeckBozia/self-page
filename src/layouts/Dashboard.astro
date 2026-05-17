@@ -171,7 +171,7 @@ const buildTime = new Date().toISOString();
           <h2>{s.title}</h2>
           <div class="grid">
             {s.items.map((app) => (
-              <a class="card" href={app.href}>
+              <a class="card" href={app.href} target="_blank" rel="noopener noreferrer">
                 <p class="name">{app.name}</p>
                 <p class="desc">{app.desc}</p>
               </a>
