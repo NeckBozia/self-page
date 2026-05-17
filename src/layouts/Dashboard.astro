@@ -11,9 +11,10 @@ interface Props {
   headerLabel: string;
   sections: Section[];
   navLink?: { href: string; label: string };
+  redirectAdminTo?: string;
 }
 
-const { pageTitle, headerLabel, sections, navLink } = Astro.props;
+const { pageTitle, headerLabel, sections, navLink, redirectAdminTo } = Astro.props;
 const buildTime = new Date().toISOString();
 ---
 
@@ -184,6 +185,18 @@ const buildTime = new Date().toISOString();
       {navLink && (<> · <a href={navLink.href}>{navLink.label}</a></>)}
       · <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
     </footer>
+    {redirectAdminTo && (
+      <script is:inline define:vars={{ target: redirectAdminTo }}>
+        fetch('/cdn-cgi/access/get-identity', { credentials: 'same-origin' })
+          .then(r => r.ok ? r.json() : null)
+          .then(id => {
+            if (id && id.email === 'neckbozia@gmail.com') {
+              window.location.replace(target);
+            }
+          })
+          .catch(() => {});
+      </script>
+    )}
     <script is:inline>
       function tick() {
         const d = new Date();
