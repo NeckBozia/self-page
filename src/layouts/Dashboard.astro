@@ -190,7 +190,8 @@ const buildTime = new Date().toISOString();
         fetch('/cdn-cgi/access/get-identity', { credentials: 'same-origin' })
           .then(r => r.ok ? r.json() : null)
           .then(id => {
-            if (id && id.email === 'neckbozia@gmail.com') {
+            const adminEmails = ['neckbozia@gmail.com', 'neckbozia@outlook.com'];
+            if (id && adminEmails.includes(id.email)) {
               window.location.replace(target);
             }
           })
