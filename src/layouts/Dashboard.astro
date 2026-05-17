@@ -1,0 +1,201 @@
+---
+import "../styles/global.css";
+
+interface Section {
+  title: string;
+  items: { name: string; href: string; desc: string }[];
+}
+
+interface Props {
+  pageTitle: string;
+  headerLabel: string;
+  sections: Section[];
+  navLink?: { href: string; label: string };
+}
+
+const { pageTitle, headerLabel, sections, navLink } = Astro.props;
+const buildTime = new Date().toISOString();
+---
+
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{pageTitle}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #1a1a1a;
+        --muted: #6a6a72;
+        --card: #fafafa;
+        --card-hover: #f0f0f2;
+        --border: #e4e4e7;
+        --border-hover: #a8a8b0;
+        --accent: #4a8a9c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        max-width: 960px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 56px 32px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 24px;
+      }
+      h1 {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      .clock {
+        font-variant-numeric: tabular-nums;
+        font-size: 14px;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+      main {
+        max-width: 960px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 40px 32px 80px;
+        flex: 1;
+      }
+      section { margin-bottom: 48px; }
+      h2 {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin: 0 0 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      a.card {
+        display: block;
+        padding: 18px 18px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: inherit;
+        text-decoration: none;
+        transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+        position: relative;
+        overflow: hidden;
+      }
+      a.card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, transparent 0%, rgba(74, 138, 156, 0.08) 100%);
+        opacity: 0;
+        transition: opacity 200ms ease;
+        pointer-events: none;
+      }
+      a.card:hover {
+        border-color: var(--border-hover);
+        background: var(--card-hover);
+        transform: translateY(-1px);
+      }
+      a.card:hover::before { opacity: 1; }
+      .name {
+        font-size: 15px;
+        font-weight: 500;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .name::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        opacity: 0.6;
+        transition: opacity 160ms ease;
+      }
+      a.card:hover .name::before { opacity: 1; }
+      .desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.5;
+      }
+      footer {
+        text-align: center;
+        padding: 24px;
+        font-size: 11px;
+        color: #999;
+        font-variant-numeric: tabular-nums;
+      }
+      footer a {
+        color: #888;
+        text-decoration: none;
+        border-bottom: 1px dotted #bbb;
+      }
+      footer a:hover { color: var(--accent); border-color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>{headerLabel}</h1>
+      <div class="clock" id="clock">--:--:--</div>
+    </header>
+    <main>
+      {sections.map((s) => (
+        <section>
+          <h2>{s.title}</h2>
+          <div class="grid">
+            {s.items.map((app) => (
+              <a class="card" href={app.href}>
+                <p class="name">{app.name}</p>
+                <p class="desc">{app.desc}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </main>
+    <footer>
+      built <span id="ts">{buildTime}</span>
+      {navLink && (<> · <a href={navLink.href}>{navLink.label}</a></>)}
+      · <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
+    </footer>
+    <script is:inline>
+      function tick() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, "0");
+        const t = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        const w = ["日","一","二","三","四","五","六"][d.getDay()];
+        const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} 周${w}`;
+        const el = document.getElementById("clock");
+        if (el) el.textContent = `${date}  ${t}`;
+      }
+      tick();
+      setInterval(tick, 1000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+---
+import Dashboard from "../layouts/Dashboard.astro";
+
+const sections = [
+  {
+    title: "Tools",
+    items: [
+      { name: "Claude Code",       href: "https://cc.neckbozia.com",       desc: "AI 编程助手 — 浏览器内编程" },
+      { name: "知识库",            href: "https://kb.neckbozia.com",       desc: "Quartz personal KB" },
+    ],
+  },
+  {
+    title: "Dashboards",
+    items: [
+      { name: "Homepage",          href: "https://hp.neckbozia.com",       desc: "主 dashboard(service 集成丰富)" },
+      { name: "Access Admin",      href: "https://admin.neckbozia.com",    desc: "白名单 Web UI" },
+    ],
+  },
+];
+---
+
+<Dashboard
+  pageTitle="Admin"
+  headerLabel="Admin / Astro"
+  sections={sections}
+  navLink={{ href: "/", label: "public" }}
+/>

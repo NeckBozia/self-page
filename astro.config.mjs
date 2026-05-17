@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) => !page.includes('/dashboard'),
+      filter: (page) => !page.includes('/dashboard') && !page.includes('/admin'),
     }),
   ],
   vite: {
