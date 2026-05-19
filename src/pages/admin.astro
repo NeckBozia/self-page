@@ -1,35 +1,89 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 
+// 每张卡两条链路：
+//   cfaHref      —— 走 CF Tunnel + CF Access SSO（橙云）
+//   autheliaHref —— 走家公网 :66 + Authelia / gateway nginx 直连（灰云，快）
+// 缺一边时 layout 会把卡片在对应 tab 下变灰显示「未配置」。
 const sections = [
   {
     title: "Yudao OA",
     items: [
-      { name: "Yudao OA",          href: "https://ruoyi.neckbozia.com",                         desc: "OA 后台 — admin SPA" },
-      { name: "Spring Boot Admin", href: "https://ruoyilog.neckbozia.com/admin/applications",   desc: "yudao-server 实时监控" },
-      { name: "Grafana",           href: "https://grafana.neckbozia.com",                       desc: "性能监控 / PVE + 容器指标" },
+      {
+        name: "Yudao OA",
+        desc: "OA 后台 — admin SPA",
+        cfaHref: "https://ruoyi.neckbozia.com",
+        autheliaHref: "https://ruoyi.neckbozia.com:66",
+      },
+      {
+        name: "Spring Boot Admin",
+        desc: "yudao-server 实时监控",
+        cfaHref: "https://ruoyilog.neckbozia.com/admin/applications",
+        autheliaHref: null,
+      },
+      {
+        name: "Grafana",
+        desc: "性能监控 / PVE + 容器指标",
+        cfaHref: null,
+        autheliaHref: "https://grafana.neckbozia.com:66",
+      },
     ],
   },
   {
     title: "Downloads",
     items: [
-      { name: "qBittorrent",       href: "https://qb.neckbozia.com/",                           desc: "qb WebUI (CF Access SSO,跳 qB 登录)" },
-      { name: "Transmission",      href: "https://tr.hongbo.wang:88/transmission/web/",         desc: "tr WebUI" },
+      {
+        name: "qBittorrent",
+        desc: "qb WebUI",
+        cfaHref: "https://qb.neckbozia.com/",
+        autheliaHref: null,
+      },
+      {
+        name: "Transmission",
+        desc: "tr WebUI",
+        cfaHref: "https://tr.hongbo.wang:88/transmission/web/",
+        autheliaHref: null,
+      },
     ],
   },
   {
     title: "Tools",
     items: [
-      { name: "Claude Code",       href: "https://cc.neckbozia.com",       desc: "AI 编程助手 — 浏览器内编程" },
-      { name: "知识库",            href: "https://kb.neckbozia.com",       desc: "Quartz personal KB" },
+      {
+        name: "Claude Code",
+        desc: "AI 编程助手 — 浏览器内编程",
+        cfaHref: "https://cc.neckbozia.com",
+        autheliaHref: null,
+      },
+      {
+        name: "知识库",
+        desc: "Quartz personal KB",
+        cfaHref: "https://kb.neckbozia.com",
+        autheliaHref: "https://ngkb.neckbozia.com:66",
+      },
     ],
   },
   {
     title: "Dashboards",
     items: [
-      { name: "Homepage",          href: "https://hp.neckbozia.com",       desc: "主 dashboard(service 集成丰富)" },
-      { name: "Access Admin",      href: "https://admin.neckbozia.com",    desc: "白名单 Web UI" },
-      { name: "mihomo",            href: "https://mihomo.neckbozia.com",   desc: "metacubexd — 代理面板 / 流量 / 规则命中" },
+      {
+        name: "Homepage",
+        desc: "主 dashboard（service 集成丰富）",
+        cfaHref: "https://hp.neckbozia.com",
+        autheliaHref: null,
+      },
+      {
+        name: "Access Admin",
+        desc: "白名单 Web UI",
+        cfaHref: "https://admin.neckbozia.com",
+        autheliaHref: null,
+      },
+      {
+        name: "mihomo",
+        desc: "metacubexd — 代理面板 / 流量 / 规则命中",
+        cfaHref: "https://mihomo.neckbozia.com",
+        autheliaHref: null,
+      },
     ],
   },
 ];

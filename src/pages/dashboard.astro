@@ -1,13 +1,29 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 
+// 每张卡两条链路（cfaHref 走 CF Access，autheliaHref 走 :66 Authelia 灰云直连）
 const sections = [
   {
     title: "Yudao OA",
     items: [
-      { name: "Yudao OA",          href: "https://ruoyi.neckbozia.com",                         desc: "OA 后台 — admin SPA" },
-      { name: "Spring Boot Admin", href: "https://ruoyilog.neckbozia.com/admin/applications",   desc: "yudao-server 实时监控" },
-      { name: "Grafana",           href: "https://grafana.neckbozia.com",                       desc: "性能监控 / PVE + 容器指标" },
+      {
+        name: "Yudao OA",
+        desc: "OA 后台 — admin SPA",
+        cfaHref: "https://ruoyi.neckbozia.com",
+        autheliaHref: "https://ruoyi.neckbozia.com:66",
+      },
+      {
+        name: "Spring Boot Admin",
+        desc: "yudao-server 实时监控",
+        cfaHref: "https://ruoyilog.neckbozia.com/admin/applications",
+        autheliaHref: null,
+      },
+      {
+        name: "Grafana",
+        desc: "性能监控 / PVE + 容器指标",
+        cfaHref: null,
+        autheliaHref: "https://grafana.neckbozia.com:66",
+      },
     ],
   },
 ];

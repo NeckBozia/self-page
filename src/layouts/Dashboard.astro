@@ -1,9 +1,16 @@
 ---
 import "../styles/global.css";
 
+interface Item {
+  name: string;
+  desc: string;
+  cfaHref?: string | null;
+  autheliaHref?: string | null;
+}
+
 interface Section {
   title: string;
-  items: { name: string; href: string; desc: string }[];
+  items: Item[];
 }
 
 interface Props {
@@ -89,6 +96,44 @@ const buildTime = new Date().toISOString();
         padding-bottom: 8px;
         border-bottom: 1px solid var(--border);
       }
+      .tabs {
+        display: inline-flex;
+        gap: 2px;
+        margin-bottom: 32px;
+        padding: 3px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .tabs button {
+        padding: 6px 14px;
+        font: inherit;
+        font-size: 12px;
+        color: var(--muted);
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 160ms ease, color 160ms ease;
+        letter-spacing: 0.04em;
+      }
+      .tabs button.active {
+        background: var(--bg);
+        color: var(--fg);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .tabs button:hover:not(.active) {
+        color: var(--fg);
+      }
+      a.card.disabled {
+        opacity: 0.35;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+      a.card.disabled .desc::after {
+        content: " · 未配置";
+        color: var(--muted);
+      }
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -166,12 +211,23 @@ const buildTime = new Date().toISOString();
       <div class="clock" id="clock">--:--:--</div>
     </header>
     <main>
+      <div class="tabs" role="tablist" aria-label="登录链路">
+        <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
+        <button type="button" data-tab="cfa" role="tab">CF Access</button>
+      </div>
       {sections.map((s) => (
         <section>
           <h2>{s.title}</h2>
           <div class="grid">
             {s.items.map((app) => (
-              <a class="card" href={app.href} target="_blank" rel="noopener noreferrer">
+              <a
+                class="card"
+                href={app.autheliaHref ?? app.cfaHref ?? "#"}
+                data-authelia={app.autheliaHref ?? ""}
+                data-cfa={app.cfaHref ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <p class="name">{app.name}</p>
               </a>
             ))}
@@ -198,6 +254,36 @@ const buildTime = new Date().toISOString();
           .catch(() => {});
       </script>
     )}
+    <script is:inline>
+      (function () {
+        var KEY = "dashTab";
+        function apply(tab) {
+          document.querySelectorAll(".tabs button").forEach(function (b) {
+            b.classList.toggle("active", b.dataset.tab === tab);
+          });
+          document.querySelectorAll("a.card").forEach(function (c) {
+            var href = c.dataset[tab];
+            if (href) {
+              c.href = href;
+              c.classList.remove("disabled");
+            } else {
+              c.removeAttribute("href");
+              c.classList.add("disabled");
+            }
+          });
+        }
+        document.querySelectorAll(".tabs button").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var tab = btn.dataset.tab;
+            apply(tab);
+            try { localStorage.setItem(KEY, tab); } catch (e) {}
+          });
+        });
+        var saved = "authelia";
+        try { saved = localStorage.getItem(KEY) || "authelia"; } catch (e) {}
+        apply(saved);
+      })();
+    </script>
     <script is:inline>
       function tick() {
         const d = new Date();
