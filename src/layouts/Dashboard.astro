@@ -59,11 +59,14 @@ const buildTime = new Date().toISOString();
         width: 100%;
         margin: 0 auto;
         padding: 56px 32px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
         gap: 24px;
       }
+      header h1 { justify-self: start; }
+      header .tabs { justify-self: center; margin: 0; }
+      header .clock { justify-self: end; }
       h1 {
         font-size: 14px;
         font-weight: 500;
@@ -99,7 +102,6 @@ const buildTime = new Date().toISOString();
       .tabs {
         display: inline-flex;
         gap: 2px;
-        margin-bottom: 32px;
         padding: 3px;
         background: var(--card);
         border: 1px solid var(--border);
@@ -208,13 +210,13 @@ const buildTime = new Date().toISOString();
   <body>
     <header>
       <h1>{headerLabel}</h1>
-      <div class="clock" id="clock">--:--:--</div>
-    </header>
-    <main>
       <div class="tabs" role="tablist" aria-label="登录链路">
         <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
         <button type="button" data-tab="cfa" role="tab">CF Access</button>
       </div>
+      <div class="clock" id="clock">--:--:--</div>
+    </header>
+    <main>
       {sections.map((s) => (
         <section>
           <h2>{s.title}</h2>
