@@ -2,8 +2,8 @@
 import Dashboard from "../layouts/Dashboard.astro";
 
 // 每张卡两条链路：
-//   cfaHref      —— 走 CF Tunnel + CF Access SSO（橙云）
-//   autheliaHref —— 走家公网 :66 + Authelia / gateway nginx 直连（灰云，快）
+//   cfaHref      —— 走 CF Tunnel + CF Access SSO（橙云，长名）
+//   autheliaHref —— 走家公网 :66 + Authelia / gateway nginx 直连（灰云短名，快）
 // 缺一边时 layout 会把卡片在对应 tab 下变灰显示「未配置」。
 const sections = [
   {
@@ -13,13 +13,13 @@ const sections = [
         name: "Yudao OA",
         desc: "OA 后台 — admin SPA",
         cfaHref: "https://ruoyi.neckbozia.com",
-        autheliaHref: "https://ruoyi.neckbozia.com:66",
+        autheliaHref: "https://ya.neckbozia.com:66",
       },
       {
         name: "Spring Boot Admin",
         desc: "yudao-server 实时监控",
         cfaHref: "https://ruoyilog.neckbozia.com/admin/applications",
-        autheliaHref: null,
+        autheliaHref: "https://sba.neckbozia.com:66/admin/applications",
       },
       {
         name: "Grafana",
@@ -35,8 +35,8 @@ const sections = [
       {
         name: "qBittorrent",
         desc: "qb WebUI",
-        cfaHref: "https://qb.neckbozia.com/",
-        autheliaHref: null,
+        cfaHref: "https://qbittorrent.neckbozia.com/",
+        autheliaHref: "https://qb.neckbozia.com:66/",
       },
       {
         name: "Transmission",
@@ -52,14 +52,14 @@ const sections = [
       {
         name: "Claude Code",
         desc: "AI 编程助手 — 浏览器内编程",
-        cfaHref: "https://cc.neckbozia.com",
-        autheliaHref: null,
+        cfaHref: "https://claudecode.neckbozia.com",
+        autheliaHref: "https://cc.neckbozia.com:66",
       },
       {
         name: "知识库",
         desc: "Quartz personal KB",
-        cfaHref: "https://kb.neckbozia.com",
-        autheliaHref: "https://ngkb.neckbozia.com:66",
+        cfaHref: "https://wiki.neckbozia.com",
+        autheliaHref: "https://kb.neckbozia.com:66",
       },
     ],
   },
@@ -69,8 +69,8 @@ const sections = [
       {
         name: "Homepage",
         desc: "主 dashboard（service 集成丰富）",
-        cfaHref: "https://hp.neckbozia.com",
-        autheliaHref: null,
+        cfaHref: "https://homepage.neckbozia.com",
+        autheliaHref: "https://hp.neckbozia.com:66",
       },
       {
         name: "Access Admin",
@@ -82,7 +82,7 @@ const sections = [
         name: "mihomo",
         desc: "metacubexd — 代理面板 / 流量 / 规则命中",
         cfaHref: "https://mihomo.neckbozia.com",
-        autheliaHref: null,
+        autheliaHref: "https://mhn.neckbozia.com:66/ui/",
       },
     ],
   },
