@@ -102,43 +102,48 @@ const sections = [
     </div>
   </section>
   <style slot="post-sections">
-    /* OTP-specific overrides — reuse .card class but block click + monospace OTP */
+    /* OTP section — low-profile, matches footer link aesthetic */
     #otp-section .otp-card {
       display: block;
-      padding: 14px 18px;
+      padding: 10px 14px;
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: default;
     }
     #otp-section .otp-code {
       font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      color: var(--fg);
-      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 0 0 4px;
     }
     #otp-section .otp-meta {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--muted);
       line-height: 1.5;
       word-break: break-all;
+      margin: 0;
     }
     #otp-section .otp-empty {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
-      padding: 14px 18px;
+      padding: 10px 14px;
     }
     #otp-section .otp-link {
       display: inline-block;
-      font-size: 11px;
-      color: var(--accent);
+      font-size: 10px;
+      color: var(--muted);
       text-decoration: none;
-      margin-top: 6px;
+      border-bottom: 1px dotted var(--border-hover);
+      margin-top: 4px;
       word-break: break-all;
     }
-    #otp-section .otp-link:hover { text-decoration: underline; }
+    #otp-section .otp-link:hover {
+      color: var(--fg);
+      border-bottom-color: var(--fg);
+    }
   </style>
   <script is:inline slot="post-sections">
     (function () {
