@@ -96,88 +96,64 @@ const sections = [
   navLink={{ href: "/", label: "public" }}
 >
   <section slot="post-sections" id="otp-section">
-    <h2>Authelia OTP (最近 5)</h2>
-    <div class="grid" id="otp-grid">
-      <div class="otp-empty">loading…</div>
+    <div id="otp-list">
+      <span class="otp-empty">loading…</span>
     </div>
   </section>
   <style slot="post-sections" is:global>
-    /* OTP section — minimal footprint, footer-tier aesthetic */
-    /* is:global because the .otp-card / .otp-link DOM is JS-injected at runtime
-       and won't carry Astro's data-astro-cid scope attribute, so scoped
-       selectors wouldn't match. */
-    #otp-section .grid {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 8px;
-    }
-    #otp-section .otp-card {
-      display: block;
-      padding: 6px 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: default;
-    }
-    #otp-section .otp-code {
-      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin: 0 0 2px;
-    }
-    #otp-section .otp-meta {
-      font-size: 9px;
-      color: var(--muted);
-      line-height: 1.45;
-      word-break: break-all;
+    /* OTP strip — footer-tier 字号/字重，紧贴 main 末尾，单行 inline 排版 */
+    /* is:global because the inner DOM is JS-injected at runtime and won't
+       carry Astro's data-astro-cid scope attribute. */
+    #otp-section {
       margin: 0;
+      padding: 12px 0 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.7;
+    }
+    #otp-section .otp-row {
+      display: block;
     }
     #otp-section .otp-empty {
-      font-size: 10px;
-      color: var(--muted);
-      padding: 6px 10px;
+      font-size: 11px;
+      color: #999;
     }
     #otp-section .otp-link {
-      display: inline-block;
-      font-size: 9px;
-      color: var(--muted);
+      color: #888;
       text-decoration: none;
-      border-bottom: 1px dotted var(--border-hover);
-      margin-top: 2px;
-      word-break: break-all;
+      border-bottom: 1px dotted #bbb;
     }
     #otp-section .otp-link:hover {
-      color: var(--fg);
-      border-bottom-color: var(--fg);
+      color: var(--accent);
+      border-bottom-color: var(--accent);
     }
   </style>
   <script is:inline slot="post-sections">
     (function () {
       function render(items) {
-        var grid = document.getElementById("otp-grid");
-        if (!grid) return;
+        var list = document.getElementById("otp-list");
+        if (!list) return;
         if (!items.length) {
-          grid.innerHTML = '<div class="otp-empty">暂无 OTP / 通知（notification.txt 空）</div>';
+          list.innerHTML = '<span class="otp-empty">no notifications</span>';
           return;
         }
-        grid.innerHTML = items
+        list.innerHTML = items
           .map(function (it) {
-            var code = it.otp ? '<p class="otp-code">' + it.otp + "</p>" : "";
-            var link = it.link
-              ? '<a class="otp-link" href="' +
-                it.link +
-                '" target="_blank" rel="noopener noreferrer">open link</a>'
-              : "";
-            var meta =
-              "<p class=\"otp-meta\">" +
-              (it.subject || "(no subject)") +
-              "<br>→ " +
-              (it.to || "(unknown)") +
-              "<br>" +
-              (it.ts || "") +
-              "</p>";
-            return '<div class="otp-card">' + code + meta + link + "</div>";
+            var parts = [];
+            if (it.ts) parts.push(it.ts);
+            if (it.subject) parts.push(it.subject);
+            if (it.to) parts.push("→ " + it.to);
+            if (it.otp) parts.push(it.otp);
+            if (it.link)
+              parts.push(
+                '<a class="otp-link" href="' +
+                  it.link +
+                  '" target="_blank" rel="noopener noreferrer">open link</a>'
+              );
+            return '<div class="otp-row">' + parts.join(" · ") + "</div>";
           })
           .join("");
       }
@@ -186,8 +162,8 @@ const sections = [
           .then(function (r) { return r.ok ? r.json() : { items: [] }; })
           .then(function (j) { render(j.items || []); })
           .catch(function () {
-            var grid = document.getElementById("otp-grid");
-            if (grid) grid.innerHTML = '<div class="otp-empty">读取失败</div>';
+            var list = document.getElementById("otp-list");
+            if (list) list.innerHTML = '<span class="otp-empty">读取失败</span>';
           });
       }
       load();
