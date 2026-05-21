@@ -90,7 +90,7 @@ const sections = [
   navLink={{ href: "/guest/", label: "guest" }}
 
 >
-  <section slot="post-sections" id="otp-section">
+  <section slot="footer-extra" id="otp-section">
     <div id="otp-list">
       <span class="otp-empty">loading…</span>
     </div>
@@ -105,7 +105,7 @@ const sections = [
     <span class="sep">·</span>
     <a href="/authelia/" target="_blank" rel="noopener">Authelia</a>
   </div>
-  <style slot="post-sections" is:global>
+  <style slot="footer-extra" is:global>
     /* OTP strip + user mgmt row — 字号比 footer 大一档，inner DOM 由 JS 注入故 is:global */
     #otp-section {
       margin: 0;
@@ -177,7 +177,7 @@ const sections = [
       border-bottom-color: var(--accent);
     }
   </style>
-  <script is:inline slot="post-sections">
+  <script is:inline slot="footer-extra">
     (function () {
       var lastEl = document.getElementById("otp-last-refresh");
       var btn = document.getElementById("otp-refresh-btn");
