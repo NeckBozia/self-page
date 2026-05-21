@@ -82,7 +82,7 @@ const sections = [
         name: "mihomo",
         desc: "metacubexd — 代理面板 / 流量 / 规则命中",
         cfaHref: "https://mihomo.neckbozia.com",
-        autheliaHref: "https://mhn.neckbozia.com:66/ui/",
+        autheliaHref: "https://mhn.neckbozia.com:66/ui/metacubexd/",
       },
     ],
   },
@@ -94,4 +94,92 @@ const sections = [
   headerLabel="Admin / Astro"
   sections={sections}
   navLink={{ href: "/", label: "public" }}
-/>
+>
+  <section slot="post-sections" id="otp-section">
+    <h2>Authelia OTP (最近 5)</h2>
+    <div class="grid" id="otp-grid">
+      <div class="otp-empty">loading…</div>
+    </div>
+  </section>
+  <style slot="post-sections">
+    /* OTP-specific overrides — reuse .card class but block click + monospace OTP */
+    #otp-section .otp-card {
+      display: block;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: default;
+    }
+    #otp-section .otp-code {
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--fg);
+      margin: 0 0 6px;
+    }
+    #otp-section .otp-meta {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+      word-break: break-all;
+    }
+    #otp-section .otp-empty {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 14px 18px;
+    }
+    #otp-section .otp-link {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: 6px;
+      word-break: break-all;
+    }
+    #otp-section .otp-link:hover { text-decoration: underline; }
+  </style>
+  <script is:inline slot="post-sections">
+    (function () {
+      function render(items) {
+        var grid = document.getElementById("otp-grid");
+        if (!grid) return;
+        if (!items.length) {
+          grid.innerHTML = '<div class="otp-empty">暂无 OTP / 通知（notification.txt 空）</div>';
+          return;
+        }
+        grid.innerHTML = items
+          .map(function (it) {
+            var code = it.otp ? '<p class="otp-code">' + it.otp + "</p>" : "";
+            var link = it.link
+              ? '<a class="otp-link" href="' +
+                it.link +
+                '" target="_blank" rel="noopener noreferrer">open link</a>'
+              : "";
+            var meta =
+              "<p class=\"otp-meta\">" +
+              (it.subject || "(no subject)") +
+              "<br>→ " +
+              (it.to || "(unknown)") +
+              "<br>" +
+              (it.ts || "") +
+              "</p>";
+            return '<div class="otp-card">' + code + meta + link + "</div>";
+          })
+          .join("");
+      }
+      function load() {
+        fetch("/admin/_notifications.json", { credentials: "same-origin" })
+          .then(function (r) { return r.ok ? r.json() : { items: [] }; })
+          .then(function (j) { render(j.items || []); })
+          .catch(function () {
+            var grid = document.getElementById("otp-grid");
+            if (grid) grid.innerHTML = '<div class="otp-empty">读取失败</div>';
+          });
+      }
+      load();
+      setInterval(load, 30000);
+    })();
+  </script>
+</Dashboard>

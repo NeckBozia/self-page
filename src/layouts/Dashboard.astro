@@ -236,6 +236,7 @@ const buildTime = new Date().toISOString();
           </div>
         </section>
       ))}
+      <slot name="post-sections" />
     </main>
     <footer>
       built <span id="ts">{buildTime}</span>
