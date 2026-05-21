@@ -61,12 +61,6 @@ const sections = [
         cfaHref: "https://wiki.neckbozia.com",
         autheliaHref: "https://kb.neckbozia.com:66",
       },
-      {
-        name: "User Management",
-        desc: "用户增删 / 启停 / 改密（CFA 走 admin.neckbozia.com，Authelia 走 /authelia/）",
-        cfaHref: "https://admin.neckbozia.com",
-        autheliaHref: "/authelia/",
-      },
     ],
   },
   {
@@ -97,31 +91,63 @@ const sections = [
 
 >
   <section slot="post-sections" id="otp-section">
+    <div id="otp-header">
+      <span id="otp-last-refresh">—</span>
+      <button type="button" id="otp-refresh-btn" title="刷新 OTP">⟳ 刷新</button>
+    </div>
     <div id="otp-list">
       <span class="otp-empty">loading…</span>
     </div>
   </section>
+  <div slot="post-sections" id="user-mgmt-row">
+    <span class="lbl">User Management</span>
+    <a href="https://admin.neckbozia.com" target="_blank" rel="noopener">CFA</a>
+    <span class="sep">·</span>
+    <a href="/authelia/" target="_blank" rel="noopener">Authelia</a>
+  </div>
   <style slot="post-sections" is:global>
-    /* OTP strip — footer-tier 字号/字重，紧贴 main 末尾，单行 inline 排版 */
-    /* is:global because the inner DOM is JS-injected at runtime and won't
-       carry Astro's data-astro-cid scope attribute. */
+    /* OTP strip + user mgmt row — 字号比 footer 大一档，inner DOM 由 JS 注入故 is:global */
     #otp-section {
       margin: 0;
-      padding: 12px 0 0;
+      padding: 14px 0 0;
       border-top: 1px solid var(--border);
-      text-align: center;
-      font-size: 11px;
+      font-size: 13px;
       color: #999;
       font-variant-numeric: tabular-nums;
       line-height: 1.7;
     }
-    #otp-section .otp-row {
-      display: block;
+    #otp-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
     }
-    #otp-section .otp-empty {
-      font-size: 11px;
-      color: #999;
+    #otp-last-refresh { font-variant-numeric: tabular-nums; }
+    #otp-refresh-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
     }
+    #otp-refresh-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    #otp-refresh-btn:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+    #otp-list { text-align: center; }
+    #otp-section .otp-row { display: block; }
+    #otp-section .otp-empty { font-size: 13px; color: #999; }
     #otp-section .otp-link {
       color: #888;
       text-decoration: none;
@@ -131,44 +157,71 @@ const sections = [
       color: var(--accent);
       border-bottom-color: var(--accent);
     }
+    #user-mgmt-row {
+      text-align: center;
+      padding: 18px 0 6px;
+      font-size: 13px;
+      color: #888;
+    }
+    #user-mgmt-row .lbl { color: #888; margin-right: 8px; }
+    #user-mgmt-row .sep { margin: 0 4px; color: #bbb; }
+    #user-mgmt-row a {
+      color: #888;
+      text-decoration: none;
+      border-bottom: 1px dotted #bbb;
+    }
+    #user-mgmt-row a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
   </style>
   <script is:inline slot="post-sections">
     (function () {
+      var lastEl = document.getElementById("otp-last-refresh");
+      var btn = document.getElementById("otp-refresh-btn");
+      var listEl = document.getElementById("otp-list");
+
+      function pad(n) { return String(n).padStart(2, "0"); }
+      function fmtTime(d) {
+        var n = new Date();
+        var sameDay = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+        var hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
+        return sameDay ? hm : (pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + hm);
+      }
+
       function render(items) {
-        var list = document.getElementById("otp-list");
-        if (!list) return;
         if (!items.length) {
-          list.innerHTML = '<span class="otp-empty">no notifications</span>';
+          listEl.innerHTML = '<span class="otp-empty">no notifications</span>';
           return;
         }
-        list.innerHTML = items
-          .map(function (it) {
-            var parts = [];
-            if (it.ts) parts.push(it.ts);
-            if (it.subject) parts.push(it.subject);
-            if (it.to) parts.push("→ " + it.to);
-            if (it.otp) parts.push(it.otp);
-            if (it.link)
-              parts.push(
-                '<a class="otp-link" href="' +
-                  it.link +
-                  '" target="_blank" rel="noopener noreferrer">open link</a>'
-              );
-            return '<div class="otp-row">' + parts.join(" · ") + "</div>";
-          })
-          .join("");
+        listEl.innerHTML = items.map(function (it) {
+          var parts = [];
+          if (it.ts) parts.push(it.ts);
+          if (it.subject) parts.push(it.subject);
+          if (it.to) parts.push("→ " + it.to);
+          if (it.otp) parts.push(it.otp);
+          if (it.link) parts.push('<a class="otp-link" href="' + it.link + '" target="_blank" rel="noopener noreferrer">open link</a>');
+          return '<div class="otp-row">' + parts.join(" · ") + "</div>";
+        }).join("");
       }
+
       function load() {
+        btn.disabled = true;
         fetch("/_notifications.json", { credentials: "same-origin" })
           .then(function (r) { return r.ok ? r.json() : { items: [] }; })
-          .then(function (j) { render(j.items || []); })
+          .then(function (j) {
+            render(j.items || []);
+            lastEl.textContent = fmtTime(new Date());
+          })
           .catch(function () {
-            var list = document.getElementById("otp-list");
-            if (list) list.innerHTML = '<span class="otp-empty">读取失败</span>';
-          });
+            listEl.innerHTML = '<span class="otp-empty">读取失败</span>';
+            lastEl.textContent = fmtTime(new Date()) + " (失败)";
+          })
+          .finally(function () { btn.disabled = false; });
       }
+
+      btn.addEventListener("click", load);
       load();
-      setInterval(load, 30000);
     })();
   </script>
 </Dashboard>
