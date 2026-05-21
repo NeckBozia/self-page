@@ -102,42 +102,46 @@ const sections = [
     </div>
   </section>
   <style slot="post-sections">
-    /* OTP section — low-profile, matches footer link aesthetic */
+    /* OTP section — minimal footprint, footer-tier aesthetic */
+    #otp-section .grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
+    }
     #otp-section .otp-card {
       display: block;
-      padding: 10px 14px;
+      padding: 6px 10px;
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: default;
     }
     #otp-section .otp-code {
       font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       color: var(--muted);
-      margin: 0 0 4px;
+      margin: 0 0 2px;
     }
     #otp-section .otp-meta {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.45;
       word-break: break-all;
       margin: 0;
     }
     #otp-section .otp-empty {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--muted);
-      padding: 10px 14px;
+      padding: 6px 10px;
     }
     #otp-section .otp-link {
       display: inline-block;
-      font-size: 10px;
+      font-size: 9px;
       color: var(--muted);
       text-decoration: none;
       border-bottom: 1px dotted var(--border-hover);
-      margin-top: 4px;
+      margin-top: 2px;
       word-break: break-all;
     }
     #otp-section .otp-link:hover {
