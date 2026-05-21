@@ -91,12 +91,12 @@ const sections = [
 
 >
   <section slot="post-sections" id="otp-section">
-    <div id="otp-header">
-      <span id="otp-last-refresh">—</span>
-      <button type="button" id="otp-refresh-btn" title="刷新 OTP">⟳ 刷新</button>
-    </div>
     <div id="otp-list">
       <span class="otp-empty">loading…</span>
+    </div>
+    <div id="otp-controls">
+      <span id="otp-last-refresh">—</span>
+      <button type="button" id="otp-refresh-btn" title="刷新 OTP" aria-label="刷新">⟳</button>
     </div>
   </section>
   <div slot="footer-extra" id="user-mgmt-row">
@@ -115,27 +115,30 @@ const sections = [
       color: #999;
       font-variant-numeric: tabular-nums;
       line-height: 1.7;
-    }
-    #otp-header {
       display: flex;
-      justify-content: flex-end;
       align-items: center;
-      gap: 10px;
+      gap: 16px;
+    }
+    #otp-list { flex: 1; min-width: 0; text-align: left; }
+    #otp-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
       font-size: 12px;
       color: #888;
-      margin-bottom: 8px;
     }
     #otp-last-refresh { font-variant-numeric: tabular-nums; }
     #otp-refresh-btn {
       background: transparent;
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 3px 10px;
-      font-size: 12px;
+      padding: 2px 8px;
+      font-size: 15px;
+      line-height: 1;
       color: #888;
       cursor: pointer;
-      font: inherit;
-      font-size: 12px;
+      font-family: inherit;
     }
     #otp-refresh-btn:hover {
       color: var(--accent);
@@ -145,7 +148,6 @@ const sections = [
       opacity: 0.5;
       cursor: wait;
     }
-    #otp-list { text-align: center; }
     #otp-section .otp-row { display: block; }
     #otp-section .otp-empty { font-size: 13px; color: #999; }
     #otp-section .otp-link {
