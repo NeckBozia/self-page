@@ -101,8 +101,11 @@ const sections = [
       <div class="otp-empty">loading…</div>
     </div>
   </section>
-  <style slot="post-sections">
+  <style slot="post-sections" is:global>
     /* OTP section — minimal footprint, footer-tier aesthetic */
+    /* is:global because the .otp-card / .otp-link DOM is JS-injected at runtime
+       and won't carry Astro's data-astro-cid scope attribute, so scoped
+       selectors wouldn't match. */
     #otp-section .grid {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 8px;
