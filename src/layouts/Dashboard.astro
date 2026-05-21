@@ -247,10 +247,13 @@ const buildTime = new Date().toISOString();
       <slot name="post-sections" />
     </main>
     <footer>
-      built <span id="ts">{buildTime}</span>
-      {navLink && (<> · <a href={navLink.href}>{navLink.label}</a></>)}
-      · <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
-      · <a href="https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout">logout</a>
+      <slot name="footer-extra" />
+      <div class="footer-built">
+        built <span id="ts">{buildTime}</span>
+        {navLink && (<> · <a href={navLink.href}>{navLink.label}</a></>)}
+        · <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
+        · <a href="https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout">logout</a>
+      </div>
     </footer>
     {redirectAdminTo && (
       <script is:inline define:vars={{ target: redirectAdminTo }}>
