@@ -101,9 +101,12 @@ const sections = [
   </section>
   <div slot="footer-extra" id="user-mgmt-row">
     <span class="lbl">User Management</span>
-    <a href="https://admin.neckbozia.com" target="_blank" rel="noopener">CFA</a>
-    <span class="sep">·</span>
-    <a href="/authelia/" target="_blank" rel="noopener">Authelia</a>
+    <a class="um-cfa-only" href="https://admin.neckbozia.com" target="_blank" rel="noopener">CFA</a>
+    <span class="sep um-cfa-only">·</span>
+    <a id="um-authelia"
+       data-cfa="/authelia/"
+       data-authelia="https://users.neckbozia.com:66/"
+       target="_blank" rel="noopener">Authelia</a>
   </div>
   <style slot="footer-extra" is:global>
     /* OTP strip + user mgmt row — 字号比 footer 大一档，inner DOM 由 JS 注入故 is:global */
@@ -220,6 +223,24 @@ const sections = [
 
       btn.addEventListener("click", load);
       load();
+    })();
+
+    /* User Management 行跟 layout 顶部 tab 联动 */
+    (function () {
+      var KEY = "dashTab";
+      var anchor = document.getElementById("um-authelia");
+      function apply(tab) {
+        document.querySelectorAll("#user-mgmt-row .um-cfa-only").forEach(function (el) {
+          el.style.display = tab === "cfa" ? "" : "none";
+        });
+        if (anchor) anchor.href = anchor.dataset[tab] || "#";
+      }
+      var saved = "authelia";
+      try { saved = localStorage.getItem(KEY) || "authelia"; } catch (e) {}
+      apply(saved);
+      document.querySelectorAll(".tabs button").forEach(function (b) {
+        b.addEventListener("click", function () { apply(b.dataset.tab); });
+      });
     })();
   </script>
 </Dashboard>
