@@ -119,7 +119,7 @@ const sections = [
       align-items: center;
       gap: 16px;
     }
-    #otp-list { flex: 1; min-width: 0; text-align: left; }
+    #otp-list { flex: 1; min-width: 0; text-align: center; }
     #otp-controls {
       display: flex;
       align-items: center;
@@ -131,19 +131,15 @@ const sections = [
     #otp-last-refresh { font-variant-numeric: tabular-nums; }
     #otp-refresh-btn {
       background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 8px;
-      font-size: 15px;
+      border: none;
+      padding: 2px 4px;
+      font-size: 16px;
       line-height: 1;
       color: #888;
       cursor: pointer;
       font-family: inherit;
     }
-    #otp-refresh-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
+    #otp-refresh-btn:hover { color: var(--accent); }
     #otp-refresh-btn:disabled {
       opacity: 0.5;
       cursor: wait;
