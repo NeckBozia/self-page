@@ -1,16 +1,18 @@
 ---
 import "../styles/global.css";
 
-interface Item {
+interface CardItem {
   name: string;
-  desc: string;
+  desc?: string;
   cfaHref?: string | null;
   autheliaHref?: string | null;
+  icon?: string;
 }
 
 interface Section {
   title: string;
-  items: Item[];
+  type?: "links";
+  items: any[];
 }
 
 interface Props {
@@ -22,7 +24,11 @@ interface Props {
 }
 
 const { pageTitle, headerLabel, sections, navLink, redirectAdminTo } = Astro.props;
-const buildTime = new Date().toISOString();
+
+function mono(item: CardItem): string {
+  if (item.icon) return item.icon;
+  return [...item.name][0] ?? "·";
+}
 ---
 
 <!doctype html>
@@ -36,225 +42,168 @@ const buildTime = new Date().toISOString();
     <style>
       :root {
         --bg: #ffffff;
-        --fg: #1a1a1a;
-        --muted: #6a6a72;
-        --card: #fafafa;
-        --card-hover: #f0f0f2;
-        --border: #e4e4e7;
-        --border-hover: #a8a8b0;
-        --accent: #4a8a9c;
+        --fg: #18181b;
+        --muted: #71717a;
+        --faint: #a1a1aa;
+        --border: #ededee;
+        --tile: #f4f4f5;
+        --hover: #fafafa;
+        --accent: #18181b;
       }
       * { box-sizing: border-box; }
+      html, body { margin: 0; }
       body {
         background: var(--bg);
         color: var(--fg);
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.5;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
       }
-      header {
-        max-width: 1024px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 20px 32px 0;
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        align-items: center;
-        gap: 24px;
-      }
-      header h1 { justify-self: start; }
-      header .tabs { justify-self: center; margin: 0; }
-      header .clock { justify-self: end; }
-      h1 {
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--muted);
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        margin: 0;
-      }
-      .clock {
-        font-variant-numeric: tabular-nums;
-        font-size: 14px;
-        color: var(--muted);
-        letter-spacing: 0.02em;
-      }
-      main {
-        max-width: 1024px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 24px 32px 40px;
-        flex: 1;
-      }
-      section { margin-bottom: 28px; }
-      section:last-of-type { margin-bottom: 0; }
+      .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 40px; }
 
-      /* 桌面单屏不滚；移动端走默认滚动 */
-      @media (min-width: 768px) {
-        html, body { height: 100dvh; }
-        body { overflow: hidden; }
-        main { overflow: hidden; min-height: 0; }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 34px 0 8px;
       }
-      h2 {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--muted);
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        margin: 0 0 14px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--border);
-      }
-      .tabs {
-        display: inline-flex;
-        gap: 2px;
-        padding: 3px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-      }
+      .brand { font-size: 13px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg); }
+      .head-right { display: flex; align-items: baseline; gap: 22px; }
+      .clock { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--faint); letter-spacing: 0.04em; }
+      .tabs { display: inline-flex; gap: 14px; font-size: 12px; letter-spacing: 0.04em; }
       .tabs button {
-        padding: 6px 14px;
-        font: inherit;
-        font-size: 12px;
-        color: var(--muted);
-        background: transparent;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 160ms ease, color 160ms ease;
-        letter-spacing: 0.04em;
+        background: none; border: none; padding: 0; cursor: pointer;
+        font: inherit; font-size: 12px; color: var(--faint); letter-spacing: 0.04em;
+        transition: color 140ms ease;
       }
-      .tabs button.active {
-        background: var(--bg);
-        color: var(--fg);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      }
-      .tabs button:hover:not(.active) {
-        color: var(--fg);
-      }
-      a.card.disabled {
-        opacity: 0.35;
-        pointer-events: none;
-        cursor: not-allowed;
-      }
-      a.card.disabled .desc::after {
-        content: " · 未配置";
-        color: var(--muted);
+      .tabs button.active { color: var(--fg); }
+      .tabs button:hover:not(.active) { color: var(--muted); }
+
+      main { flex: 1; padding: 26px 0 52px; }
+
+      .cat { margin-bottom: 22px; }
+      .cat-label {
+        font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--faint); margin: 0 0 8px;
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+        gap: 1px;
       }
       a.card {
-        display: block;
-        padding: 18px 18px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        color: inherit;
-        text-decoration: none;
-        transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
-        position: relative;
-        overflow: hidden;
+        display: flex; align-items: center; gap: 11px;
+        padding: 9px 11px;
+        border-radius: 9px;
+        text-decoration: none; color: inherit;
+        transition: background 140ms ease;
       }
-      a.card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, transparent 0%, rgba(74, 138, 156, 0.08) 100%);
-        opacity: 0;
-        transition: opacity 200ms ease;
-        pointer-events: none;
+      a.card:hover { background: var(--hover); }
+      a.card.disabled { opacity: 0.32; pointer-events: none; }
+      a.card.disabled .desc::after { content: " · 未配置"; color: var(--faint); }
+      .mono {
+        flex: none;
+        width: 30px; height: 30px;
+        border-radius: 8px;
+        background: var(--tile);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 600; color: var(--muted);
       }
-      a.card:hover {
-        border-color: var(--border-hover);
-        background: var(--card-hover);
-        transform: translateY(-1px);
+      .txt { min-width: 0; display: flex; flex-direction: column; }
+      .name { font-size: 14px; font-weight: 500; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .desc { font-size: 12px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+      /* 纯链接名（无图标无描述，紧凑横排） */
+      .linklist { display: flex; flex-wrap: wrap; gap: 7px 22px; padding: 2px 4px; }
+      .linklist a {
+        font-size: 13px; color: var(--muted); text-decoration: none;
+        transition: color 140ms ease;
       }
-      a.card:hover::before { opacity: 1; }
-      .name {
-        font-size: 15px;
-        font-weight: 500;
-        margin: 0 0 6px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+      .linklist a:hover { color: var(--fg); }
+
+      footer { font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
+      .footer-built {
+        border-top: 1px solid var(--border);
+        padding: 16px 0 28px;
+        display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
       }
-      .name::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--accent);
-        opacity: 0.6;
-        transition: opacity 160ms ease;
+      .footer-built a { color: var(--muted); text-decoration: none; }
+      .footer-built a:hover { color: var(--fg); }
+
+      @media (max-width: 640px) {
+        .wrap { padding: 0 20px; }
+        header { padding: 22px 0 8px; flex-wrap: wrap; gap: 10px 16px; }
+        .brand { flex: 1 0 auto; }
+        main { padding: 18px 0 44px; }
+        .grid { grid-template-columns: 1fr; gap: 0; }
+        .cat { margin-bottom: 20px; }
+        .linklist { gap: 10px 18px; }
+        .footer-built { gap: 8px 16px; padding-bottom: 24px; }
       }
-      a.card:hover .name::before { opacity: 1; }
-      .desc {
-        font-size: 12px;
-        color: var(--muted);
-        margin: 0;
-        line-height: 1.5;
-      }
-      footer {
-        text-align: center;
-        padding: 24px;
-        font-size: 11px;
-        color: #999;
-        font-variant-numeric: tabular-nums;
-      }
-      footer a {
-        color: #888;
-        text-decoration: none;
-        border-bottom: 1px dotted #bbb;
-      }
-      footer a:hover { color: var(--accent); border-color: var(--accent); }
     </style>
   </head>
   <body>
-    <header>
-      <h1>{headerLabel}</h1>
-      <div class="tabs" role="tablist" aria-label="登录链路">
-        <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
-        <button type="button" data-tab="cfa" role="tab">CF Access</button>
-      </div>
-      <div class="clock" id="clock">--:--:--</div>
-    </header>
-    <main>
-      {sections.map((s) => (
-        <section>
-          <h2>{s.title}</h2>
-          <div class="grid">
-            {s.items.map((app) => (
-              <a
-                class="card"
-                href={app.autheliaHref ?? app.cfaHref ?? "#"}
-                data-authelia={app.autheliaHref ?? ""}
-                data-cfa={app.cfaHref ?? ""}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <p class="name">{app.name}</p>
-              </a>
-            ))}
+    <div class="wrap">
+      <header>
+        <span class="brand">{headerLabel}</span>
+        <div class="head-right">
+          <div class="tabs" role="tablist" aria-label="登录链路">
+            <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
+            <button type="button" data-tab="cfa" role="tab">CF Access</button>
           </div>
-        </section>
-      ))}
-      <slot name="post-sections" />
-    </main>
-    <footer>
-      <slot name="footer-extra" />
-      <div class="footer-built">
-        built <span id="ts">{buildTime}</span>
-        {navLink && (<> · <a href={navLink.href}>{navLink.label}</a></>)}
-        · <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
-        · <a href="https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout">logout</a>
-      </div>
-    </footer>
+          <span class="clock" id="clock">--:--:--</span>
+        </div>
+      </header>
+
+      <main>
+        {sections.map((s) => (
+          <section class="cat">
+            <p class="cat-label">{s.title}</p>
+            {s.type === "links" ? (
+              <div class="linklist">
+                {s.items.map((it) => (
+                  <a href={it.href} target="_blank" rel="noopener noreferrer">{it.name}</a>
+                ))}
+              </div>
+            ) : (
+              <div class="grid">
+                {s.items.map((app) => (
+                  <a
+                    class="card"
+                    href={app.autheliaHref ?? app.cfaHref ?? "#"}
+                    data-authelia={app.autheliaHref ?? ""}
+                    data-cfa={app.cfaHref ?? ""}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span class="mono">{mono(app)}</span>
+                    <span class="txt">
+                      <span class="name">{app.name}</span>
+                      <span class="desc">{app.desc}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </section>
+        ))}
+        <slot name="post-sections" />
+      </main>
+
+      <footer>
+        <slot name="footer-extra" />
+        <div class="footer-built">
+          <span id="date">—</span>
+          {navLink && (<a href={navLink.href}>{navLink.label}</a>)}
+          <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
+          <a href="https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout">logout</a>
+        </div>
+      </footer>
+    </div>
+
     {redirectAdminTo && (
       <script is:inline define:vars={{ target: redirectAdminTo }}>
         fetch('/cdn-cgi/access/get-identity', { credentials: 'same-origin' })
@@ -268,6 +217,7 @@ const buildTime = new Date().toISOString();
           .catch(() => {});
       </script>
     )}
+
     <script is:inline>
       (function () {
         var KEY = "dashTab";
@@ -276,7 +226,10 @@ const buildTime = new Date().toISOString();
             b.classList.toggle("active", b.dataset.tab === tab);
           });
           document.querySelectorAll("a.card").forEach(function (c) {
-            var href = c.dataset[tab];
+            if (!("authelia" in c.dataset) && !("cfa" in c.dataset)) return;
+            var a = c.dataset.authelia || "";
+            var f = c.dataset.cfa || "";
+            var href = tab === "cfa" ? f : a;
             if (href) {
               c.href = href;
               c.classList.remove("disabled");
@@ -298,15 +251,16 @@ const buildTime = new Date().toISOString();
         apply(saved);
       })();
     </script>
+
     <script is:inline>
       function tick() {
         const d = new Date();
         const pad = (n) => String(n).padStart(2, "0");
-        const t = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-        const w = ["日","一","二","三","四","五","六"][d.getDay()];
-        const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} 周${w}`;
         const el = document.getElementById("clock");
-        if (el) el.textContent = `${date}  ${t}`;
+        if (el) el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        const w = ["日","一","二","三","四","五","六"][d.getDay()];
+        const de = document.getElementById("date");
+        if (de) de.textContent = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} 周${w}`;
       }
       tick();
       setInterval(tick, 1000);
