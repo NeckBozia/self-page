@@ -30,8 +30,14 @@ const sections = [
     ],
   },
   {
-    title: "Downloads",
+    title: "Synology",
     items: [
+      {
+        name: "DSM",
+        desc: "Synology 管理面板",
+        cfaHref: "https://dsm.neckbozia.com:66",
+        autheliaHref: "https://dsm.neckbozia.com:66",
+      },
       {
         name: "qBittorrent",
         desc: "qb WebUI",
@@ -43,6 +49,13 @@ const sections = [
         desc: "tr WebUI",
         cfaHref: "https://transmission.neckbozia.com/transmission/web/",
         autheliaHref: "https://tr.neckbozia.com:66/transmission/web/",
+      },
+      {
+        // 占位：实际有 https://wd.neckbozia.com:66（后端 :5005），但 WebDAV 是挂载协议非浏览器 UI，先留空待配置
+        name: "WebDAV",
+        desc: "Synology WebDAV",
+        cfaHref: null,
+        autheliaHref: null,
       },
     ],
   },
@@ -73,12 +86,6 @@ const sections = [
   {
     title: "Dashboards",
     items: [
-      {
-        name: "Homepage",
-        desc: "主 dashboard（service 集成丰富）",
-        cfaHref: "https://homepage.neckbozia.com",
-        autheliaHref: "https://hp.neckbozia.com:66",
-      },
       {
         name: "mihomo",
         desc: "metacubexd — 代理面板 / 流量 / 规则命中",
