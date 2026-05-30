@@ -254,15 +254,27 @@ function mono(item: CardItem): string {
             }
           });
         }
+        // hostname-aware default: home.neckbozia.com (CF Tunnel) → cfa, 其它 (users:66 等) → authelia
+        function defaultByHost() {
+          var h = (location.hostname || "").toLowerCase();
+          var p = location.port || "";
+          if (h === "home.neckbozia.com" && p !== "66") return "cfa";
+          return "authelia";
+        }
+        // localStorage 按 hostname 分离，跨入口不串 state
+        var hostKey = KEY + ":" + (location.hostname || "_");
         document.querySelectorAll(".tabs button").forEach(function (btn) {
           btn.addEventListener("click", function () {
             var tab = btn.dataset.tab;
             apply(tab);
-            try { localStorage.setItem(KEY, tab); } catch (e) {}
+            try { localStorage.setItem(hostKey, tab); } catch (e) {}
           });
         });
-        var saved = "authelia";
-        try { saved = localStorage.getItem(KEY) || "authelia"; } catch (e) {}
+        var saved = defaultByHost();
+        try {
+          var stored = localStorage.getItem(hostKey);
+          if (stored === "authelia" || stored === "cfa") saved = stored;
+        } catch (e) {}
         apply(saved);
       })();
 
