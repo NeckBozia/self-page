@@ -93,17 +93,34 @@ function mono(item: CardItem): string {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
         gap: 1px;
+        align-items: start;
       }
-      a.card {
+      .card {
         display: flex; align-items: center; gap: 11px;
         padding: 9px 11px;
         border-radius: 9px;
         text-decoration: none; color: inherit;
         transition: background 140ms ease;
       }
-      a.card:hover { background: var(--hover); }
-      a.card.disabled { opacity: 0.32; pointer-events: none; }
-      a.card.disabled .desc::after { content: " · 未配置"; color: var(--faint); }
+      .card:hover { background: var(--hover); }
+      .card.disabled { opacity: 0.32; pointer-events: none; }
+      .card.disabled .desc::after { content: " · 未配置"; color: var(--faint); }
+
+      /* 可展开的 info 卡（点击显示连接信息） */
+      .info-card { flex-direction: column; align-items: stretch; cursor: pointer; }
+      .info-card .card-row { display: flex; align-items: center; gap: 11px; width: 100%; }
+      .chevron { margin-left: auto; color: var(--faint); font-size: 10px; transition: transform 160ms ease; }
+      .info-card.open .chevron { transform: rotate(180deg); }
+      .info-panel {
+        display: none;
+        margin-top: 9px; padding-top: 9px;
+        border-top: 1px solid var(--border);
+        font-size: 12px; color: var(--muted); line-height: 1.75;
+      }
+      .info-card.open .info-panel { display: block; }
+      .info-panel .row { display: flex; gap: 8px; }
+      .info-panel .k { color: var(--faint); flex: none; width: 2.6em; }
+      .info-panel .v { color: var(--fg); overflow-wrap: anywhere; }
       .mono {
         flex: none;
         width: 30px; height: 30px;
@@ -171,20 +188,38 @@ function mono(item: CardItem): string {
             ) : (
               <div class="grid">
                 {s.items.map((app) => (
-                  <a
-                    class="card"
-                    href={app.autheliaHref ?? app.cfaHref ?? "#"}
-                    data-authelia={app.autheliaHref ?? ""}
-                    data-cfa={app.cfaHref ?? ""}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span class="mono">{mono(app)}</span>
-                    <span class="txt">
-                      <span class="name">{app.name}</span>
-                      <span class="desc">{app.desc}</span>
-                    </span>
-                  </a>
+                  app.info ? (
+                    <div class="card info-card" tabindex="0" role="button" aria-expanded="false">
+                      <div class="card-row">
+                        <span class="mono">{mono(app)}</span>
+                        <span class="txt">
+                          <span class="name">{app.name}</span>
+                          <span class="desc">{app.desc}</span>
+                        </span>
+                        <span class="chevron">▾</span>
+                      </div>
+                      <div class="info-panel">
+                        {app.info.map((r) => (
+                          <div class="row"><span class="k">{r.k}</span><span class="v">{r.v}</span></div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <a
+                      class="card"
+                      href={app.autheliaHref ?? app.cfaHref ?? "#"}
+                      data-authelia={app.autheliaHref ?? ""}
+                      data-cfa={app.cfaHref ?? ""}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span class="mono">{mono(app)}</span>
+                      <span class="txt">
+                        <span class="name">{app.name}</span>
+                        <span class="desc">{app.desc}</span>
+                      </span>
+                    </a>
+                  )
                 ))}
               </div>
             )}
@@ -249,6 +284,20 @@ function mono(item: CardItem): string {
         var saved = "authelia";
         try { saved = localStorage.getItem(KEY) || "authelia"; } catch (e) {}
         apply(saved);
+      })();
+
+      /* info 卡：点击展开/收起连接信息 */
+      (function () {
+        function toggle(c) {
+          var open = c.classList.toggle("open");
+          c.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+        document.querySelectorAll(".info-card").forEach(function (c) {
+          c.addEventListener("click", function () { toggle(c); });
+          c.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(c); }
+          });
+        });
       })();
     </script>
 

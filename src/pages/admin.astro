@@ -51,17 +51,27 @@ const sections = [
         autheliaHref: "https://tr.neckbozia.com:66/transmission/web/",
       },
       {
-        // 占位：实际有 https://wd.neckbozia.com:66（后端 :5005），但 WebDAV 是挂载协议非浏览器 UI，先留空待配置
+        // WebDAV 是挂载协议、非浏览器 UI，所以做成「点击展开看连接信息」的 info 卡
         name: "WebDAV",
-        desc: "Synology WebDAV",
-        cfaHref: null,
-        autheliaHref: null,
+        desc: "点击看连接信息",
+        info: [
+          { k: "地址", v: "https://wd.neckbozia.com:66" },
+          { k: "后端", v: "10.1.88.8:5005" },
+          { k: "账号", v: "DSM (Synology) 账号" },
+          { k: "挂载", v: "Finder ⌘K 连接服务器 / WebDAV 客户端" },
+        ],
       },
     ],
   },
   {
-    title: "Tools",
+    title: "PVE",
     items: [
+      {
+        name: "mihomo",
+        desc: "metacubexd — 代理面板 / 流量 / 规则命中",
+        cfaHref: "https://mihomo.neckbozia.com/ui/metacubexd/",
+        autheliaHref: "https://mhn.neckbozia.com:66/ui/metacubexd/",
+      },
       {
         name: "Claude Code",
         desc: "AI 编程助手 — 浏览器内编程",
@@ -80,17 +90,6 @@ const sections = [
         icon: "↓",
         cfaHref: "https://dl.neckbozia.com",
         autheliaHref: "https://dl.neckbozia.com",
-      },
-    ],
-  },
-  {
-    title: "Dashboards",
-    items: [
-      {
-        name: "mihomo",
-        desc: "metacubexd — 代理面板 / 流量 / 规则命中",
-        cfaHref: "https://mihomo.neckbozia.com/ui/metacubexd/",
-        autheliaHref: "https://mhn.neckbozia.com:66/ui/metacubexd/",
       },
     ],
   },
