@@ -51,15 +51,10 @@ const sections = [
         autheliaHref: "https://tr.neckbozia.com:66/transmission/web/",
       },
       {
-        // WebDAV 是挂载协议、非浏览器 UI，所以做成「点击展开看连接信息」的 info 卡
+        // WebDAV 是挂载协议、非浏览器 UI，所以做成「点击复制地址」的 copy 卡
         name: "WebDAV",
-        desc: "点击看连接信息",
-        info: [
-          { k: "地址", v: "https://wd.neckbozia.com:66" },
-          { k: "后端", v: "10.1.88.8:5005" },
-          { k: "账号", v: "DSM (Synology) 账号" },
-          { k: "挂载", v: "Finder ⌘K 连接服务器 / WebDAV 客户端" },
-        ],
+        desc: "点击复制地址",
+        copy: "https://wd.neckbozia.com:66",
       },
     ],
   },

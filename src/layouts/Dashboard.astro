@@ -106,21 +106,9 @@ function mono(item: CardItem): string {
       .card.disabled { opacity: 0.32; pointer-events: none; }
       .card.disabled .desc::after { content: " · 未配置"; color: var(--faint); }
 
-      /* 可展开的 info 卡（点击显示连接信息） */
-      .info-card { flex-direction: column; align-items: stretch; cursor: pointer; }
-      .info-card .card-row { display: flex; align-items: center; gap: 11px; width: 100%; }
-      .chevron { margin-left: auto; color: var(--faint); font-size: 10px; transition: transform 160ms ease; }
-      .info-card.open .chevron { transform: rotate(180deg); }
-      .info-panel {
-        display: none;
-        margin-top: 9px; padding-top: 9px;
-        border-top: 1px solid var(--border);
-        font-size: 12px; color: var(--muted); line-height: 1.75;
-      }
-      .info-card.open .info-panel { display: block; }
-      .info-panel .row { display: flex; gap: 8px; }
-      .info-panel .k { color: var(--faint); flex: none; width: 2.6em; }
-      .info-panel .v { color: var(--fg); overflow-wrap: anywhere; }
+      /* 点击复制地址的卡 */
+      .copy-card { cursor: pointer; -webkit-user-select: none; user-select: none; }
+      .copy-card.copied .desc { color: var(--fg); }
       .mono {
         flex: none;
         width: 30px; height: 30px;
@@ -188,21 +176,13 @@ function mono(item: CardItem): string {
             ) : (
               <div class="grid">
                 {s.items.map((app) => (
-                  app.info ? (
-                    <div class="card info-card" tabindex="0" role="button" aria-expanded="false">
-                      <div class="card-row">
-                        <span class="mono">{mono(app)}</span>
-                        <span class="txt">
-                          <span class="name">{app.name}</span>
-                          <span class="desc">{app.desc}</span>
-                        </span>
-                        <span class="chevron">▾</span>
-                      </div>
-                      <div class="info-panel">
-                        {app.info.map((r) => (
-                          <div class="row"><span class="k">{r.k}</span><span class="v">{r.v}</span></div>
-                        ))}
-                      </div>
+                  app.copy ? (
+                    <div class="card copy-card" tabindex="0" role="button" data-copy={app.copy} title={app.copy}>
+                      <span class="mono">{mono(app)}</span>
+                      <span class="txt">
+                        <span class="name">{app.name}</span>
+                        <span class="desc">{app.desc}</span>
+                      </span>
                     </div>
                   ) : (
                     <a
@@ -286,16 +266,38 @@ function mono(item: CardItem): string {
         apply(saved);
       })();
 
-      /* info 卡：点击展开/收起连接信息 */
+      /* copy 卡：点击复制地址，闪一下「已复制」 */
       (function () {
-        function toggle(c) {
-          var open = c.classList.toggle("open");
-          c.setAttribute("aria-expanded", open ? "true" : "false");
+        function flash(c, msg) {
+          var d = c.querySelector(".desc");
+          if (!d) return;
+          if (c._t) { clearTimeout(c._t); } else { c._orig = d.textContent; }
+          d.textContent = msg;
+          c.classList.add("copied");
+          c._t = setTimeout(function () {
+            d.textContent = c._orig;
+            c.classList.remove("copied");
+            c._t = null;
+          }, 1500);
         }
-        document.querySelectorAll(".info-card").forEach(function (c) {
-          c.addEventListener("click", function () { toggle(c); });
+        function copy(c) {
+          var txt = c.dataset.copy || "";
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(function () { flash(c, "已复制 ✓"); })
+              .catch(function () { flash(c, "复制失败"); });
+          } else {
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = txt; document.body.appendChild(ta); ta.select();
+              document.execCommand("copy"); document.body.removeChild(ta);
+              flash(c, "已复制 ✓");
+            } catch (e) { flash(c, "复制失败"); }
+          }
+        }
+        document.querySelectorAll(".copy-card").forEach(function (c) {
+          c.addEventListener("click", function () { copy(c); });
           c.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(c); }
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); copy(c); }
           });
         });
       })();
