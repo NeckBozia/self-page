@@ -127,6 +127,139 @@ const sections = [
       <button type="button" id="otp-refresh-btn" title="刷新 OTP" aria-label="刷新">⟳</button>
     </div>
   </section>
+  <section slot="footer-extra" id="usage-section">
+    <span class="usage-label">Claude 用量</span>
+    <div id="usage-vals">
+      <span id="usage-5h" class="usage-cell">5h --</span>
+      <span class="usage-sep">·</span>
+      <span id="usage-7d" class="usage-cell">week --</span>
+    </div>
+    <div id="usage-controls">
+      <span id="usage-last">—</span>
+      <button type="button" id="usage-refresh-btn" title="主动刷新 (sub2api → anthropic)" aria-label="刷新">⟳</button>
+    </div>
+  </section>
+  <style slot="footer-extra" is:global>
+    #usage-section {
+      margin: 0;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: #999;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.7;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    #usage-section .usage-label { color: #888; flex-shrink: 0; }
+    #usage-vals { flex: 1; display: flex; gap: 12px; min-width: 0; }
+    #usage-vals .usage-sep { color: #bbb; }
+    #usage-vals .usage-cell { color: #999; }
+    #usage-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #888;
+    }
+    #usage-last { font-variant-numeric: tabular-nums; }
+    #usage-refresh-btn {
+      background: transparent;
+      border: none;
+      padding: 2px 4px;
+      font-size: 16px;
+      line-height: 1;
+      color: #888;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    #usage-refresh-btn:hover { color: var(--accent); }
+    #usage-refresh-btn:disabled { opacity: 0.5; cursor: wait; }
+    #usage-section .usage-link {
+      color: #888;
+      text-decoration: none;
+      border-bottom: 1px dotted #bbb;
+    }
+    #usage-section .usage-link:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+  </style>
+  <script is:inline slot="footer-extra">
+    (function () {
+      var BASE = "https://usage.neckbozia.com";
+      var fiveEl = document.getElementById("usage-5h");
+      var sevenEl = document.getElementById("usage-7d");
+      var lastEl = document.getElementById("usage-last");
+      var btn = document.getElementById("usage-refresh-btn");
+
+      function pad(n) { return String(n).padStart(2, "0"); }
+      function fmtTime(d) {
+        var n = new Date();
+        var sameDay = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+        var hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
+        return sameDay ? hm : (pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + hm);
+      }
+      function fmtRem(s) {
+        if (s == null) return "";
+        if (s >= 86400) return Math.floor(s / 86400) + "d " + Math.floor((s % 86400) / 3600) + "h";
+        return Math.floor(s / 3600) + "h" + Math.floor((s % 3600) / 60) + "m";
+      }
+      function srcLetter(id) { return id === 1 ? "E" : id === 2 ? "G" : "?"; }
+      function poolMax(accs, dim) {
+        var ok = (accs || []).filter(function (a) { return a.ok; });
+        if (!ok.length) return null;
+        ok.sort(function (a, b) {
+          return (b.usage[dim].utilization || 0) - (a.usage[dim].utilization || 0);
+        });
+        var top = ok[0].usage[dim];
+        return { pct: top.utilization, rem: top.remaining_seconds, id: ok[0].id };
+      }
+
+      function render(data) {
+        var fh = poolMax(data.accounts, "five_hour");
+        var wk = poolMax(data.accounts, "seven_day");
+        fiveEl.textContent = fh ? "5h " + fh.pct + "% · " + fmtRem(fh.rem) + " " + srcLetter(fh.id) : "5h --";
+        sevenEl.textContent = wk ? "week " + wk.pct + "% · " + fmtRem(wk.rem) + " " + srcLetter(wk.id) : "week --";
+        lastEl.textContent = fmtTime(new Date()) + " · " + (data.source || "?");
+      }
+
+      function showAuthNeeded() {
+        fiveEl.textContent = "未授权";
+        sevenEl.textContent = "";
+        lastEl.innerHTML = '<a href="' + BASE + '/health" target="_blank" rel="noopener" class="usage-link">登录</a>';
+      }
+      function showFail(label) {
+        fiveEl.textContent = label;
+        sevenEl.textContent = "";
+        lastEl.textContent = fmtTime(new Date()) + " (失败)";
+      }
+
+      function call(method) {
+        btn.disabled = true;
+        var url = BASE + (method === "POST" ? "/refresh" : "/usage");
+        fetch(url, { method: method, credentials: "include" })
+          .then(function (r) {
+            var ct = r.headers.get("content-type") || "";
+            if (!r.ok || ct.indexOf("json") === -1) {
+              showAuthNeeded();
+              return null;
+            }
+            return r.json();
+          })
+          .then(function (j) {
+            if (j) render(j);
+          })
+          .catch(function () { showFail("网络错误"); })
+          .finally(function () { btn.disabled = false; });
+      }
+
+      btn.addEventListener("click", function () { call("POST"); });
+      call("GET");
+    })();
+  </script>
   <div slot="footer-extra" id="user-mgmt-row">
     <span class="lbl">User Management</span>
     <a class="um-cfa-only" href="https://admin.neckbozia.com" target="_blank" rel="noopener">CFA</a>
