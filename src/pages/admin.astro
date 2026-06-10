@@ -92,6 +92,19 @@ const sections = [
         cfaHref: "https://ai.neckbozia.com/admin",
         autheliaHref: "https://ai.neckbozia.com/admin",
       },
+      {
+        name: "用量监控",
+        desc: "Sub2API 池实时用量 / 5h · 7d",
+        icon: "U",
+        cfaHref: "https://usage.neckbozia.com",
+        autheliaHref: "https://usage.neckbozia.com",
+      },
+      {
+        name: "当贝 AI",
+        desc: "外站 AI 对话",
+        cfaHref: "https://ai.dangbei.com/chat/367577972460252997",
+        autheliaHref: "https://ai.dangbei.com/chat/367577972460252997",
+      },
     ],
   },
   {
@@ -258,6 +271,24 @@ const sections = [
 
       btn.addEventListener("click", function () { call("POST"); });
       call("GET");
+    })();
+  </script>
+  <script is:inline slot="footer-extra">
+    /* admin 卡片点击量统计：mousedown 时 sendBeacon，不阻塞 target=_blank 跳转 */
+    (function () {
+      document.querySelectorAll("a.card").forEach(function (c) {
+        c.addEventListener("mousedown", function () {
+          var n = c.querySelector(".name");
+          var name = n && n.textContent ? n.textContent.trim() : "";
+          if (!name) return;
+          try {
+            navigator.sendBeacon(
+              "/__click",
+              new Blob([JSON.stringify({ name: name })], { type: "application/json" })
+            );
+          } catch (e) {}
+        });
+      });
     })();
   </script>
   <div slot="footer-extra" id="user-mgmt-row">
