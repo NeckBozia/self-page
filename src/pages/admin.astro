@@ -30,6 +30,35 @@ const sections = [
     ],
   },
   {
+    title: "Services",
+    items: [
+      {
+        name: "mihomo",
+        desc: "metacubexd — 代理面板 / 流量 / 规则命中",
+        cfaHref: "https://mihomo.neckbozia.com/ui/metacubexd/",
+        autheliaHref: "https://mhn.neckbozia.com:66/ui/metacubexd/",
+      },
+      {
+        name: "Cloud CLi",
+        desc: "AI 编程助手 — 浏览器内编程",
+        cfaHref: "https://claudecode.neckbozia.com",
+        autheliaHref: "https://cc.neckbozia.com:66",
+      },
+      {
+        name: "知识库",
+        desc: "Quartz personal KB",
+        cfaHref: "https://wiki.neckbozia.com",
+        autheliaHref: "https://kb.neckbozia.com:66",
+      },
+      {
+        name: "Sub2API",
+        desc: "Claude 中转 — 上游账号 / 定时测试 / API key 池",
+        cfaHref: "https://ai.neckbozia.com/admin",
+        autheliaHref: "https://ai.neckbozia.com/admin",
+      },
+    ],
+  },
+  {
     title: "Synology",
     items: [
       {
@@ -59,55 +88,6 @@ const sections = [
     ],
   },
   {
-    title: "Services",
-    items: [
-      {
-        name: "mihomo",
-        desc: "metacubexd — 代理面板 / 流量 / 规则命中",
-        cfaHref: "https://mihomo.neckbozia.com/ui/metacubexd/",
-        autheliaHref: "https://mhn.neckbozia.com:66/ui/metacubexd/",
-      },
-      {
-        name: "Claude Code",
-        desc: "AI 编程助手 — 浏览器内编程",
-        cfaHref: "https://claudecode.neckbozia.com",
-        autheliaHref: "https://cc.neckbozia.com:66",
-      },
-      {
-        name: "知识库",
-        desc: "Quartz personal KB",
-        cfaHref: "https://wiki.neckbozia.com",
-        autheliaHref: "https://kb.neckbozia.com:66",
-      },
-      {
-        name: "客户端下载",
-        desc: "Clash 客户端 · mac/win/安卓/iOS",
-        icon: "↓",
-        cfaHref: "https://dl.neckbozia.com",
-        autheliaHref: "https://dl.neckbozia.com",
-      },
-      {
-        name: "Sub2API",
-        desc: "Claude 中转 — 上游账号 / 定时测试 / API key 池",
-        cfaHref: "https://ai.neckbozia.com/admin",
-        autheliaHref: "https://ai.neckbozia.com/admin",
-      },
-      {
-        name: "用量监控",
-        desc: "Sub2API 池实时用量 / 5h · 7d",
-        icon: "U",
-        cfaHref: "https://usage.neckbozia.com",
-        autheliaHref: "https://usage.neckbozia.com",
-      },
-      {
-        name: "当贝 AI",
-        desc: "外站 AI 对话",
-        cfaHref: "https://ai.dangbei.com/chat/367577972460252997",
-        autheliaHref: "https://ai.dangbei.com/chat/367577972460252997",
-      },
-    ],
-  },
-  {
     title: "Links",
     type: "links",
     items: [
@@ -117,8 +97,17 @@ const sections = [
       { name: "CF API Tokens", href: "https://dash.cloudflare.com/profile/api-tokens" },
       { name: "CF Zero Trust", href: "https://one.dash.cloudflare.com/" },
       { name: "搬瓦工库存", href: "https://stock.bwg.net/" },
-      { name: "3x-ui", href: "https://lisa.neckbozia.com/aRn9X3DQvgTd0dgMKk/panel/" },
       { name: "bestproxy", href: "https://bestproxy.com/zh/" },
+      { name: "当贝 AI", href: "https://ai.dangbei.com/chat/367577972460252997" },
+    ],
+  },
+  {
+    title: "Mine",
+    type: "links",
+    items: [
+      { name: "Lisa", href: "https://lisa.neckbozia.com/aRn9X3DQvgTd0dgMKk/panel/" },
+      { name: "Usage", href: "https://usage.neckbozia.com" },
+      { name: "Download", href: "https://dl.neckbozia.com" },
     ],
   },
 ];
@@ -126,153 +115,12 @@ const sections = [
 
 <Dashboard
   pageTitle="Home"
-  headerLabel="Home / Astro"
+  headerLabel="NeckBozia"
+  brandMixed={true}
   sections={sections}
   navLink={{ href: "/guest/", label: "guest" }}
 
 >
-  <section slot="footer-extra" id="otp-section">
-    <div id="otp-list">
-      <span class="otp-empty">loading…</span>
-    </div>
-    <div id="otp-controls">
-      <span id="otp-last-refresh">—</span>
-      <button type="button" id="otp-refresh-btn" title="刷新 OTP" aria-label="刷新">⟳</button>
-    </div>
-  </section>
-  <section slot="footer-extra" id="usage-section">
-    <span class="usage-label">Claude 用量</span>
-    <div id="usage-vals">
-      <span id="usage-5h" class="usage-cell">5h --</span>
-      <span class="usage-sep">·</span>
-      <span id="usage-7d" class="usage-cell">week --</span>
-    </div>
-    <div id="usage-controls">
-      <span id="usage-last">—</span>
-      <button type="button" id="usage-refresh-btn" title="主动刷新 (sub2api → anthropic)" aria-label="刷新">⟳</button>
-    </div>
-  </section>
-  <style slot="footer-extra" is:global>
-    #usage-section {
-      margin: 0;
-      padding: 14px 0 0;
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-      color: #999;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.7;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    #usage-section .usage-label { color: #888; flex-shrink: 0; }
-    #usage-vals { flex: 1; display: flex; gap: 12px; min-width: 0; }
-    #usage-vals .usage-sep { color: #bbb; }
-    #usage-vals .usage-cell { color: #999; }
-    #usage-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      font-size: 12px;
-      color: #888;
-    }
-    #usage-last { font-variant-numeric: tabular-nums; }
-    #usage-refresh-btn {
-      background: transparent;
-      border: none;
-      padding: 2px 4px;
-      font-size: 16px;
-      line-height: 1;
-      color: #888;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    #usage-refresh-btn:hover { color: var(--accent); }
-    #usage-refresh-btn:disabled { opacity: 0.5; cursor: wait; }
-    #usage-section .usage-link {
-      color: #888;
-      text-decoration: none;
-      border-bottom: 1px dotted #bbb;
-    }
-    #usage-section .usage-link:hover {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-  </style>
-  <script is:inline slot="footer-extra">
-    (function () {
-      var BASE = "https://usage.neckbozia.com";
-      var fiveEl = document.getElementById("usage-5h");
-      var sevenEl = document.getElementById("usage-7d");
-      var lastEl = document.getElementById("usage-last");
-      var btn = document.getElementById("usage-refresh-btn");
-
-      function pad(n) { return String(n).padStart(2, "0"); }
-      function fmtTime(d) {
-        var n = new Date();
-        var sameDay = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
-        var hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
-        return sameDay ? hm : (pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + hm);
-      }
-      function fmtRem(s) {
-        if (s == null) return "";
-        if (s >= 86400) return Math.floor(s / 86400) + "d " + Math.floor((s % 86400) / 3600) + "h";
-        return Math.floor(s / 3600) + "h" + Math.floor((s % 3600) / 60) + "m";
-      }
-      function srcLetter(id) { return id === 1 ? "E" : id === 2 ? "G" : "?"; }
-      function poolMax(accs, dim) {
-        var ok = (accs || []).filter(function (a) { return a.ok; });
-        if (!ok.length) return null;
-        ok.sort(function (a, b) {
-          return (b.usage[dim].utilization || 0) - (a.usage[dim].utilization || 0);
-        });
-        var top = ok[0].usage[dim];
-        return { pct: top.utilization, rem: top.remaining_seconds, id: ok[0].id };
-      }
-
-      function render(data) {
-        var fh = poolMax(data.accounts, "five_hour");
-        var wk = poolMax(data.accounts, "seven_day");
-        fiveEl.textContent = fh ? "5h " + fh.pct + "% · " + fmtRem(fh.rem) + " " + srcLetter(fh.id) : "5h --";
-        sevenEl.textContent = wk ? "week " + wk.pct + "% · " + fmtRem(wk.rem) + " " + srcLetter(wk.id) : "week --";
-        lastEl.textContent = fmtTime(new Date()) + " · " + (data.source || "?");
-      }
-
-      function showAuthNeeded() {
-        fiveEl.textContent = "未授权";
-        sevenEl.textContent = "";
-        lastEl.innerHTML = '<a href="' + BASE + '/health" target="_blank" rel="noopener" class="usage-link">登录</a>';
-      }
-      function showFail(label) {
-        fiveEl.textContent = label;
-        sevenEl.textContent = "";
-        lastEl.textContent = fmtTime(new Date()) + " (失败)";
-      }
-
-      function call(method) {
-        btn.disabled = true;
-        var url = BASE + (method === "POST" ? "/refresh" : "/usage");
-        fetch(url, { method: method, credentials: "include" })
-          .then(function (r) {
-            var ct = r.headers.get("content-type") || "";
-            if (!r.ok || ct.indexOf("json") === -1) {
-              showAuthNeeded();
-              return null;
-            }
-            return r.json();
-          })
-          .then(function (j) {
-            if (j) render(j);
-          })
-          .catch(function () { showFail("网络错误"); })
-          .finally(function () { btn.disabled = false; });
-      }
-
-      btn.addEventListener("click", function () { call("POST"); });
-      call("GET");
-    })();
-  </script>
   <script is:inline slot="footer-extra">
     /* admin 卡片点击量统计：mousedown 时 sendBeacon，不阻塞 target=_blank 跳转 */
     (function () {
@@ -301,55 +149,6 @@ const sections = [
        target="_blank" rel="noopener">Authelia</a>
   </div>
   <style slot="footer-extra" is:global>
-    /* OTP strip + user mgmt row — 字号比 footer 大一档，inner DOM 由 JS 注入故 is:global */
-    #otp-section {
-      margin: 0;
-      padding: 14px 0 0;
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-      color: #999;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.7;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    #otp-list { flex: 1; min-width: 0; text-align: center; }
-    #otp-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      font-size: 12px;
-      color: #888;
-    }
-    #otp-last-refresh { font-variant-numeric: tabular-nums; }
-    #otp-refresh-btn {
-      background: transparent;
-      border: none;
-      padding: 2px 4px;
-      font-size: 16px;
-      line-height: 1;
-      color: #888;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    #otp-refresh-btn:hover { color: var(--accent); }
-    #otp-refresh-btn:disabled {
-      opacity: 0.5;
-      cursor: wait;
-    }
-    #otp-section .otp-row { display: block; }
-    #otp-section .otp-empty { font-size: 13px; color: #999; }
-    #otp-section .otp-link {
-      color: #888;
-      text-decoration: none;
-      border-bottom: 1px dotted #bbb;
-    }
-    #otp-section .otp-link:hover {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
     #user-mgmt-row {
       text-align: center;
       padding: 0 0 8px;
@@ -369,54 +168,6 @@ const sections = [
     }
   </style>
   <script is:inline slot="footer-extra">
-    (function () {
-      var lastEl = document.getElementById("otp-last-refresh");
-      var btn = document.getElementById("otp-refresh-btn");
-      var listEl = document.getElementById("otp-list");
-
-      function pad(n) { return String(n).padStart(2, "0"); }
-      function fmtTime(d) {
-        var n = new Date();
-        var sameDay = d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
-        var hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
-        return sameDay ? hm : (pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + hm);
-      }
-
-      function render(items) {
-        if (!items.length) {
-          listEl.innerHTML = '<span class="otp-empty">no notifications</span>';
-          return;
-        }
-        listEl.innerHTML = items.map(function (it) {
-          var parts = [];
-          if (it.ts) parts.push(it.ts);
-          if (it.subject) parts.push(it.subject);
-          if (it.to) parts.push("→ " + it.to);
-          if (it.otp) parts.push(it.otp);
-          if (it.link) parts.push('<a class="otp-link" href="' + it.link + '" target="_blank" rel="noopener noreferrer">open link</a>');
-          return '<div class="otp-row">' + parts.join(" · ") + "</div>";
-        }).join("");
-      }
-
-      function load() {
-        btn.disabled = true;
-        fetch("/_notifications.json", { credentials: "same-origin" })
-          .then(function (r) { return r.ok ? r.json() : { items: [] }; })
-          .then(function (j) {
-            render(j.items || []);
-            lastEl.textContent = fmtTime(new Date());
-          })
-          .catch(function () {
-            listEl.innerHTML = '<span class="otp-empty">读取失败</span>';
-            lastEl.textContent = fmtTime(new Date()) + " (失败)";
-          })
-          .finally(function () { btn.disabled = false; });
-      }
-
-      btn.addEventListener("click", load);
-      load();
-    })();
-
     /* User Management 行跟 layout 顶部 tab 联动 */
     (function () {
       var KEY = "dashTab";

@@ -21,9 +21,10 @@ interface Props {
   sections: Section[];
   navLink?: { href: string; label: string };
   redirectAdminTo?: string;
+  brandMixed?: boolean;
 }
 
-const { pageTitle, headerLabel, sections, navLink, redirectAdminTo } = Astro.props;
+const { pageTitle, headerLabel, sections, navLink, redirectAdminTo, brandMixed = false } = Astro.props;
 
 function mono(item: CardItem): string {
   if (item.icon) return item.icon;
@@ -51,7 +52,7 @@ function mono(item: CardItem): string {
         --accent: #18181b;
       }
       * { box-sizing: border-box; }
-      html, body { margin: 0; }
+      html, body { margin: 0; overscroll-behavior: none; }
       body {
         background: var(--bg);
         color: var(--fg);
@@ -62,6 +63,11 @@ function mono(item: CardItem): string {
         display: flex;
         flex-direction: column;
       }
+      @media (min-width: 768px) {
+        html, body { height: 100dvh; overflow: hidden; }
+        body { min-height: 0; }
+        main { overflow: hidden; }
+      }
       .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 40px; }
 
       header {
@@ -71,6 +77,7 @@ function mono(item: CardItem): string {
         padding: 34px 0 8px;
       }
       .brand { font-size: 13px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--fg); }
+      .brand.mixed { letter-spacing: 0.02em; text-transform: none; }
       .head-right { display: flex; align-items: baseline; gap: 22px; }
       .clock { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--faint); letter-spacing: 0.04em; }
       .tabs { display: inline-flex; gap: 14px; font-size: 12px; letter-spacing: 0.04em; }
@@ -153,7 +160,7 @@ function mono(item: CardItem): string {
   <body>
     <div class="wrap">
       <header>
-        <span class="brand">{headerLabel}</span>
+        <span class:list={["brand", brandMixed && "mixed"]}>{headerLabel}</span>
         <div class="head-right">
           <div class="tabs" role="tablist" aria-label="登录链路">
             <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
