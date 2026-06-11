@@ -1,9 +1,9 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 
-// home.neckbozia.com —— 只走 CF Tunnel + CF Access SSO 链路（橙云，长名）。
-// 家公网 :66 + Authelia 直连链路的卡片在 hm.astro（hm.neckbozia.com:66）。
-// DSM / WebDAV 没有 CF Tunnel 路径，保留 :66 地址（两页都有）。
+// hm.neckbozia.com:66 —— 家公网 :66 + Authelia / gateway nginx 直连链路（灰云短名，快）。
+// CF Tunnel + CF Access 链路的卡片在 admin.astro（home.neckbozia.com）。
+// DSM / WebDAV / OhMyAPI 只有一条路径，两页都有。
 const sections = [
   {
     title: "Ruoyi OA",
@@ -11,17 +11,17 @@ const sections = [
       {
         name: "Ruoyi OA",
         desc: "OA 后台 — admin SPA",
-        href: "https://ruoyi.neckbozia.com",
+        href: "https://ry.neckbozia.com:66",
       },
       {
         name: "Spring Boot Admin",
         desc: "ruoyi-server 实时监控",
-        href: "https://ruoyilog.neckbozia.com/admin/applications",
+        href: "https://ryl.neckbozia.com:66/admin/applications",
       },
       {
         name: "Grafana",
         desc: "性能监控 / PVE + 容器指标",
-        href: "https://grafana.neckbozia.com",
+        href: "https://gfn.neckbozia.com:66",
       },
     ],
   },
@@ -31,17 +31,17 @@ const sections = [
       {
         name: "mihomo",
         desc: "metacubexd — 代理面板 / 流量 / 规则命中",
-        href: "https://mihomo.neckbozia.com/ui/metacubexd/",
+        href: "https://mhn.neckbozia.com:66/ui/metacubexd/",
       },
       {
         name: "Cloud CLi",
         desc: "AI 编程助手 — 浏览器内编程",
-        href: "https://claudecode.neckbozia.com",
+        href: "https://cc.neckbozia.com:66",
       },
       {
         name: "知识库",
         desc: "Quartz personal KB",
-        href: "https://wiki.neckbozia.com",
+        href: "https://kb.neckbozia.com:66",
       },
       {
         name: "OhMyAPI",
@@ -61,12 +61,12 @@ const sections = [
       {
         name: "qBittorrent",
         desc: "qb WebUI",
-        href: "https://qbittorrent.neckbozia.com/",
+        href: "https://qb.neckbozia.com:66/",
       },
       {
         name: "Transmission",
         desc: "tr WebUI",
-        href: "https://transmission.neckbozia.com/transmission/web/",
+        href: "https://tr.neckbozia.com:66/transmission/web/",
       },
       {
         // WebDAV 是挂载协议、非浏览器 UI，所以做成「点击复制地址」的 copy 卡
@@ -76,42 +76,21 @@ const sections = [
       },
     ],
   },
-  {
-    title: "Links",
-    type: "links",
-    items: [
-      { name: "IPRisk", href: "https://iprisk.top/" },
-      { name: "Scamalytics", href: "https://scamalytics.com/" },
-      { name: "LisaHost", href: "https://lisahost.com/clientarea.php" },
-      { name: "CF API Tokens", href: "https://dash.cloudflare.com/profile/api-tokens" },
-      { name: "CF Zero Trust", href: "https://one.dash.cloudflare.com/" },
-      { name: "搬瓦工库存", href: "https://stock.bwg.net/" },
-      { name: "bestproxy", href: "https://bestproxy.com/zh/" },
-      { name: "当贝 AI", href: "https://ai.dangbei.com/chat/367577972460252997" },
-    ],
-  },
-  {
-    title: "Mine",
-    type: "links",
-    items: [
-      { name: "Lisa", href: "https://lisa.neckbozia.com/aRn9X3DQvgTd0dgMKk/panel/" },
-      { name: "Usage", href: "https://usage.neckbozia.com" },
-      { name: "Download", href: "https://dl.neckbozia.com" },
-    ],
-  },
 ];
 ---
 
 <Dashboard
-  pageTitle="Home"
+  pageTitle="HM"
   headerLabel="NeckBozia"
   brandMixed={true}
   sections={sections}
-  navLink={{ href: "/guest/", label: "guest" }}
-
+  footerLinks={[
+    { href: "https://auth.neckbozia.com:66", label: "Authelia Portal" },
+    { href: "https://auth.neckbozia.com:66/logout", label: "logout" },
+  ]}
 >
   <script is:inline slot="footer-extra">
-    /* admin 卡片点击量统计：mousedown 时 sendBeacon，不阻塞 target=_blank 跳转 */
+    /* 卡片点击量统计：mousedown 时 sendBeacon，不阻塞 target=_blank 跳转 */
     (function () {
       document.querySelectorAll("a.card").forEach(function (c) {
         c.addEventListener("mousedown", function () {
@@ -130,9 +109,7 @@ const sections = [
   </script>
   <div slot="footer-extra" id="user-mgmt-row">
     <span class="lbl">User Management</span>
-    <a href="https://admin.neckbozia.com" target="_blank" rel="noopener">CFA</a>
-    <span class="sep">·</span>
-    <a href="/authelia/" target="_blank" rel="noopener">Authelia</a>
+    <a href="https://users.neckbozia.com:66/" target="_blank" rel="noopener">Authelia</a>
   </div>
   <style slot="footer-extra" is:global>
     #user-mgmt-row {
@@ -142,7 +119,6 @@ const sections = [
       color: #888;
     }
     #user-mgmt-row .lbl { color: #888; margin-right: 8px; }
-    #user-mgmt-row .sep { margin: 0 4px; color: #bbb; }
     #user-mgmt-row a {
       color: #888;
       text-decoration: none;

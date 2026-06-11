@@ -4,8 +4,7 @@ import "../styles/global.css";
 interface CardItem {
   name: string;
   desc?: string;
-  cfaHref?: string | null;
-  autheliaHref?: string | null;
+  href?: string;
   icon?: string;
 }
 
@@ -22,9 +21,16 @@ interface Props {
   navLink?: { href: string; label: string };
   redirectAdminTo?: string;
   brandMixed?: boolean;
+  footerLinks?: { href: string; label: string }[];
 }
 
-const { pageTitle, headerLabel, sections, navLink, redirectAdminTo, brandMixed = false } = Astro.props;
+const {
+  pageTitle, headerLabel, sections, navLink, redirectAdminTo, brandMixed = false,
+  footerLinks = [
+    { href: "https://neckbozia.cloudflareaccess.com", label: "App Launcher" },
+    { href: "https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout", label: "logout" },
+  ],
+} = Astro.props;
 
 function mono(item: CardItem): string {
   if (item.icon) return item.icon;
@@ -80,14 +86,6 @@ function mono(item: CardItem): string {
       .brand.mixed { letter-spacing: 0.02em; text-transform: none; }
       .head-right { display: flex; align-items: baseline; gap: 22px; }
       .clock { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--faint); letter-spacing: 0.04em; }
-      .tabs { display: inline-flex; gap: 14px; font-size: 12px; letter-spacing: 0.04em; }
-      .tabs button {
-        background: none; border: none; padding: 0; cursor: pointer;
-        font: inherit; font-size: 12px; color: var(--faint); letter-spacing: 0.04em;
-        transition: color 140ms ease;
-      }
-      .tabs button.active { color: var(--fg); }
-      .tabs button:hover:not(.active) { color: var(--muted); }
 
       main { flex: 1; padding: 26px 0 52px; }
 
@@ -110,8 +108,6 @@ function mono(item: CardItem): string {
         transition: background 140ms ease;
       }
       .card:hover { background: var(--hover); }
-      .card.disabled { opacity: 0.32; pointer-events: none; }
-      .card.disabled .desc::after { content: " · 未配置"; color: var(--faint); }
 
       /* 点击复制地址的卡 */
       .copy-card { cursor: pointer; -webkit-user-select: none; user-select: none; }
@@ -162,10 +158,6 @@ function mono(item: CardItem): string {
       <header>
         <span class:list={["brand", brandMixed && "mixed"]}>{headerLabel}</span>
         <div class="head-right">
-          <div class="tabs" role="tablist" aria-label="登录链路">
-            <button type="button" data-tab="authelia" class="active" role="tab">Authelia</button>
-            <button type="button" data-tab="cfa" role="tab">CF Access</button>
-          </div>
           <span class="clock" id="clock">--:--:--</span>
         </div>
       </header>
@@ -194,9 +186,7 @@ function mono(item: CardItem): string {
                   ) : (
                     <a
                       class="card"
-                      href={app.autheliaHref ?? app.cfaHref ?? "#"}
-                      data-authelia={app.autheliaHref ?? ""}
-                      data-cfa={app.cfaHref ?? ""}
+                      href={app.href ?? "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -220,8 +210,7 @@ function mono(item: CardItem): string {
         <div class="footer-built">
           <span id="date">—</span>
           {navLink && (<a href={navLink.href}>{navLink.label}</a>)}
-          <a href="https://neckbozia.cloudflareaccess.com">App Launcher</a>
-          <a href="https://neckbozia.cloudflareaccess.com/cdn-cgi/access/logout">logout</a>
+          {footerLinks.map((l) => (<a href={l.href}>{l.label}</a>))}
         </div>
       </footer>
     </div>
@@ -241,50 +230,6 @@ function mono(item: CardItem): string {
     )}
 
     <script is:inline>
-      (function () {
-        var KEY = "dashTab";
-        function apply(tab) {
-          document.querySelectorAll(".tabs button").forEach(function (b) {
-            b.classList.toggle("active", b.dataset.tab === tab);
-          });
-          document.querySelectorAll("a.card").forEach(function (c) {
-            if (!("authelia" in c.dataset) && !("cfa" in c.dataset)) return;
-            var a = c.dataset.authelia || "";
-            var f = c.dataset.cfa || "";
-            var href = tab === "cfa" ? f : a;
-            if (href) {
-              c.href = href;
-              c.classList.remove("disabled");
-            } else {
-              c.removeAttribute("href");
-              c.classList.add("disabled");
-            }
-          });
-        }
-        // hostname-aware default: home.neckbozia.com (CF Tunnel) → cfa, 其它 (users:66 等) → authelia
-        function defaultByHost() {
-          var h = (location.hostname || "").toLowerCase();
-          var p = location.port || "";
-          if (h === "home.neckbozia.com" && p !== "66") return "cfa";
-          return "authelia";
-        }
-        // localStorage 按 hostname 分离，跨入口不串 state
-        var hostKey = KEY + ":" + (location.hostname || "_");
-        document.querySelectorAll(".tabs button").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var tab = btn.dataset.tab;
-            apply(tab);
-            try { localStorage.setItem(hostKey, tab); } catch (e) {}
-          });
-        });
-        var saved = defaultByHost();
-        try {
-          var stored = localStorage.getItem(hostKey);
-          if (stored === "authelia" || stored === "cfa") saved = stored;
-        } catch (e) {}
-        apply(saved);
-      })();
-
       /* copy 卡：点击复制地址，闪一下「已复制」 */
       (function () {
         function flash(c, msg) {
