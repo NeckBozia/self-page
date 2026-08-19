@@ -6,26 +6,6 @@ import Dashboard from "../layouts/Dashboard.astro";
 // DSM / WebDAV 没有 CF Tunnel 路径，保留 :66 地址（两页都有）。
 const sections = [
   {
-    title: "Ruoyi OA",
-    items: [
-      {
-        name: "Ruoyi OA",
-        desc: "OA 后台 — admin SPA",
-        href: "https://ruoyi.neckbozia.com",
-      },
-      {
-        name: "Spring Boot Admin",
-        desc: "ruoyi-server 实时监控",
-        href: "https://ruoyilog.neckbozia.com/admin/applications",
-      },
-      {
-        name: "Grafana",
-        desc: "性能监控 / PVE + 容器指标",
-        href: "https://grafana.neckbozia.com",
-      },
-    ],
-  },
-  {
     title: "Services",
     items: [
       {
@@ -33,21 +13,14 @@ const sections = [
         desc: "metacubexd — 代理面板 / 流量 / 规则命中",
         href: "https://mihomo.neckbozia.com/ui/metacubexd/",
       },
+      { name: "LisaHost", href: "https://lisahost.com/clientarea.php" },
+      { name: "3x-ui", href: "https://lisa.neckbozia.com/aRn9X3DQvgTd0dgMKk/panel/" },
       {
-        name: "Cloud CLi",
-        desc: "AI 编程助手 — 浏览器内编程",
-        href: "https://claudecode.neckbozia.com",
+        name: "IPRoyal",
+        href: "https://dashboard.iproyal.com/me/products/residential-proxies/",
       },
-      {
-        name: "知识库",
-        desc: "Quartz personal KB",
-        href: "https://wiki.neckbozia.com",
-      },
-      {
-        name: "OhMyAPI",
-        desc: "Claude 中转",
-        href: "https://ai.neckbozia.com/admin",
-      },
+      { name: "Evomi", href: "https://my.evomi.com/my/products/residential-core" },
+      { name: "搬瓦工库存", href: "https://stock.bwg.net/" },
     ],
   },
   {
@@ -77,27 +50,47 @@ const sections = [
     ],
   },
   {
+    title: "Ruoyi OA",
+    items: [
+      {
+        name: "Ruoyi OA",
+        desc: "OA 后台 — admin SPA",
+        href: "https://ruoyi.neckbozia.com",
+      },
+      {
+        name: "Spring Boot Admin",
+        desc: "ruoyi-server 实时监控",
+        href: "https://ruoyilog.neckbozia.com/admin/applications",
+      },
+      {
+        name: "Grafana",
+        desc: "性能监控 / PVE + 容器指标",
+        href: "https://grafana.neckbozia.com",
+      },
+    ],
+  },
+  {
     title: "Links",
     type: "links",
     items: [
       { name: "IPRisk", href: "https://iprisk.top/" },
       { name: "Scamalytics", href: "https://scamalytics.com/" },
-      { name: "LisaHost", href: "https://lisahost.com/clientarea.php" },
       { name: "CF API Tokens", href: "https://dash.cloudflare.com/profile/api-tokens" },
       { name: "CF Zero Trust", href: "https://one.dash.cloudflare.com/" },
-      { name: "搬瓦工库存", href: "https://stock.bwg.net/" },
       { name: "bestproxy", href: "https://bestproxy.com/zh/" },
       { name: "当贝 AI", href: "https://ai.dangbei.com/chat/367577972460252997" },
+      { name: "TempMailer", href: "https://tempmailer.cc/zh/" },
     ],
   },
   {
     title: "Mine",
     type: "links",
     items: [
-      { name: "3x-ui", href: "https://lisa.neckbozia.com/aRn9X3DQvgTd0dgMKk/panel/" },
-      { name: "Usage", href: "https://dashboard.iproyal.com/me" },
-      { name: "Download", href: "https://dl.neckbozia.com" },
       { name: "API Box", href: "https://api.neckbozia.com/?k=3uBxJSECLkEqCVpV" },
+      { name: "Download", href: "https://dl.neckbozia.com" },
+      { name: "OhMyAPI", href: "https://ai.neckbozia.com/admin" },
+      { name: "Cloud CLi", href: "https://claudecode.neckbozia.com" },
+      { name: "知识库", href: "https://wiki.neckbozia.com" },
     ],
   },
 ];
