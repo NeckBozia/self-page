@@ -16,7 +16,6 @@ const sections = [
         href: "https://dashboard.iproyal.com/me/products/residential-proxies/",
       },
       { name: "IPRoyal 账单", href: "https://bill.neckbozia.com/" },
-      { name: "Evomi", href: "https://my.evomi.com/my/products/residential-core" },
       { name: "搬瓦工库存", href: "https://stock.bwg.net/" },
     ],
   },
@@ -68,7 +67,7 @@ const sections = [
   },
   {
     title: "Links",
-    type: "links",
+    type: "links" as const,
     items: [
       { name: "IPRisk", href: "https://iprisk.top/" },
       { name: "Scamalytics", href: "https://scamalytics.com/" },
@@ -81,13 +80,16 @@ const sections = [
   },
   {
     title: "Mine",
-    type: "links",
+    type: "links" as const,
     items: [
       { name: "API Box", href: "https://api.neckbozia.com/?k=3uBxJSECLkEqCVpV" },
       { name: "Download", href: "https://dl.neckbozia.com" },
       { name: "OhMyAPI", href: "https://ai.neckbozia.com/admin" },
       { name: "Cloud CLi", href: "https://claudecode.neckbozia.com" },
       { name: "知识库", href: "https://wiki.neckbozia.com" },
+      { name: "Box", href: "https://box.bozia.xyz/" },
+      { name: "海航 666", href: "https://fly.bozia.xyz/" },
+      { name: "Colab LLM", href: "https://llm.neckbozia.com/" },
     ],
   },
 ];
